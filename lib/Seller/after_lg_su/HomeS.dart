@@ -1,3 +1,4 @@
+import 'package:digi_queue/Seller/after_lg_su/customerDetail.dart';
 import 'package:flutter/material.dart';
 import 'package:digi_queue/Seller/after_lg_su/DrawerS.dart';
 import 'package:digi_queue/Seller/after_lg_su/shopInfoCrud.dart';
@@ -11,12 +12,14 @@ class HomeS extends StatefulWidget {
 class _HomeSState extends State<HomeS> {
   String _shopName, _shopPhoto;
   bool _isOpen;
-  bool isLoading = true;
+  bool isLoading;
   var timeLineData;
   List<String> timeInterval;
+  var _tileColor = Colors.grey[300];
 
   @override
   void initState() {
+    isLoading = true;
     super.initState();
     timeInterval = List<String>();
     timeInterval.addAll({
@@ -46,6 +49,9 @@ class _HomeSState extends State<HomeS> {
       '4:40 pm',
       '5:00 pm',
       '5:20 pm',
+      '5:40 pm',
+      '6:00 pm',
+      '6:20 pm',
       '6:40 pm',
       '7:00 pm',
       '7:20 pm',
@@ -69,10 +75,6 @@ class _HomeSState extends State<HomeS> {
       if (_isOpen) {
         setState(() {
           ShopInfoCrud().getTimeLIne(userId.getAt(0)).then((result) {
-            // for (int i = 0; i < timeInterval.length; i++) {
-            //   if (result[i.toString()].toString() != "null")
-            //     print(result[i.toString()].toString());
-            // }
             setState(() {
               timeLineData = result;
             });
@@ -83,7 +85,7 @@ class _HomeSState extends State<HomeS> {
   }
 
   Widget build(BuildContext context) {
-    return isLoading == false
+    return !isLoading
         ? Scaffold(
             drawer: drawerS(context, _shopName, "", _shopPhoto),
             appBar: AppBar(
@@ -114,24 +116,61 @@ class _HomeSState extends State<HomeS> {
               itemBuilder: (context, index) {
                 if (snapShot.data.documents[0].data[index.toString()]
                         .toString() !=
-                    'null') {
-                  String s1 = snapShot.data.documents[0].data[index.toString()]
+                    "null") {
+                  String userInfo = snapShot
+                      .data.documents[0].data[index.toString()]
                       .toString()
                       .split('.')
                       .first;
-                  String s2 = snapShot.data.documents[0].data[index.toString()]
+                  if (userInfo == 'S') userInfo = 'Not booked yet';
+
+                  String timeFrame = snapShot
+                      .data.documents[0].data[index.toString()]
                       .toString()
                       .split('.')
                       .last;
-                  return ListTile(
-                    title: Text(s1),
-                    subtitle: Text(s2),
+                  return Container(
+                    padding: EdgeInsets.fromLTRB(7.0, 5.0, 7.0, 5.0),
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(8.0)),
+                    child: ListTile(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (builder) =>
+                                CustomerDetail(userInfo: userInfo),
+                          ),
+                        );
+                      },
+                      tileColor: _tileColor,
+                      dense: true,
+                      title: Text(
+                        userInfo,
+                      ),
+                      subtitle: Text(
+                        timeFrame,
+                      ),
+                      leading: Icon(
+                        Icons.account_circle,
+                      ),
+                      trailing: Icon(
+                        Icons.keyboard_arrow_right,
+                      ),
+                    ),
                   );
-                } else
-                  return ListTile(
-                    title: Text(''),
-                    subtitle: Text(''),
+                } else {
+                  return Container(
+                    padding: EdgeInsets.fromLTRB(7.0, 5.0, 7.0, 5.0),
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(8.0)),
+                    child: ListTile(
+                        dense: true,
+                        leading: Icon(Icons.close),
+                        tileColor: Colors.red[300],
+                        title: Text(timeInterval[index])),
                   );
+                }
               });
         });
   }

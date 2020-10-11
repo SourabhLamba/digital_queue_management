@@ -1,3 +1,4 @@
+import 'package:digi_queue/Customer/after_lg_su/CustomerInfoCrud.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -17,12 +18,14 @@ class _SignupPageState extends State<SignupPage> {
   String _email = '', _password1 = "", _password2 = "";
 
   Box<String> whoAreYou;
+  Box<String> userId;
   bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
     whoAreYou = Hive.box<String>("whoAreYou");
+    userId = Hive.box<String>("userId");
   }
 
   @override
@@ -167,6 +170,14 @@ class _SignupPageState extends State<SignupPage> {
                                         email: _email, password: _password1)
                                     .then((value) {
                                   whoAreYou.putAt(0, "customer");
+                                  userId.putAt(0, value.user.uid.toString());
+                                  var customerData = {
+                                    "userId": value.user.uid,
+                                    "customerEmail": _email,
+                                    "type": "customer",
+                                  };
+                                  CustomerInfoCrud().createCustomer(
+                                      value.user.uid, customerData);
                                   if (value.user != null) {
                                     Navigator.pop(context);
                                     Navigator.pushReplacement(context,

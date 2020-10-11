@@ -87,11 +87,12 @@ class HPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             FadeAnimation(
-                1,
-                Text(
-                  "Welcome",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
-                )),
+              1,
+              Text(
+                "Welcome",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
+              ),
+            ),
             SizedBox(
               height: 20,
             ),

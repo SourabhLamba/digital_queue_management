@@ -47,6 +47,9 @@ class _TimeLineSState extends State<TimeLineS> {
       '4:40 pm',
       '5:00 pm',
       '5:20 pm',
+      '5:40 pm',
+      '6:00 pm',
+      '6:20 pm',
       '6:40 pm',
       '7:00 pm',
       '7:20 pm',
@@ -93,6 +96,11 @@ class _TimeLineSState extends State<TimeLineS> {
                             .createTimeLines(userId.getAt(0), timeLine);
                         setState(() {
                           _isOpen = value;
+                          Navigator.pop(context);
+                          Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder: (builder) {
+                            return HomeS();
+                          }));
                         });
                       } else {
                         ShopInfoCrud()
@@ -101,14 +109,9 @@ class _TimeLineSState extends State<TimeLineS> {
                           timeLine.clear();
                           _isOpen = value;
                           Navigator.pop(context);
-                          Navigator.pop(context);
-                          Navigator.push(context,
+                          Navigator.pushReplacement(context,
                               MaterialPageRoute(builder: (builder) {
                             return HomeS();
-                          }));
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (builder) {
-                            return TimeLineS();
                           }));
                         });
                       }

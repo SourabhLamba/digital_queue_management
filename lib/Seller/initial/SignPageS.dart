@@ -178,7 +178,6 @@ class _SignupPageSState extends State<SignupPageS> {
                                     'isOpen': false
                                   };
 
-                                  print("***********" + whoAreYou.getAt(0));
                                   ShopInfoCrud()
                                       .createShop(value.user.uid, shopData);
                                   Navigator.pop(context);
