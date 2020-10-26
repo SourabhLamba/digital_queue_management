@@ -3,6 +3,7 @@ import 'package:digi_queue/Customer/after_lg_su/drawer.dart';
 import 'package:digi_queue/Customer/after_lg_su/shopDetail.dart';
 import 'package:flutter/material.dart';
 import 'package:digi_queue/main.dart';
+import 'package:hive/hive.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -10,18 +11,21 @@ class Home extends StatefulWidget {
 }
 
 String _customerName, _customerPhoto, _customerEmail;
-bool isLoading = true;
+bool isLoading = true, _isLoading1 = true;
 var _sellersData;
+Box<String> userId;
 
 class _HomeState extends State<Home> {
   @override
   void initState() {
+    userId = Hive.box<String>("userId");
     super.initState();
     CustomerInfoCrud().getCustomer(userId.getAt(0)).then((result) {
       setState(() {
         _customerName = result['customerName'].toString();
         _customerPhoto = result['customerPhoto'].toString();
         _customerEmail = result['customerEmail'].toString();
+        _isLoading1 = false;
       });
     });
 
@@ -35,7 +39,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return !isLoading
+    return !isLoading && !_isLoading1
         ? Scaffold(
             drawer:
                 drawer(context, _customerName, _customerEmail, _customerPhoto),
@@ -56,6 +60,23 @@ class _HomeState extends State<Home> {
     return StreamBuilder(
         stream: _sellersData,
         builder: (context, snapShot) {
+          if (snapShot.data == null)
+            return Center(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Loading Sellers",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 15,
+                    ),
+                  ),
+                  CircularProgressIndicator(),
+                ],
+              ),
+            );
           return ListView.builder(
               itemCount: snapShot.data.documents.length,
               itemBuilder: (build, index) {
@@ -66,6 +87,20 @@ class _HomeState extends State<Home> {
                         MaterialPageRoute(builder: (builder) {
                       return ShopDetail(
                           uid: snapShot.data.documents[index].data['userId']
+                              .toString(),
+                          name: snapShot.data.documents[index].data['shopName']
+                              .toString(),
+                          address: snapShot
+                              .data.documents[index].data['shopAddress']
+                              .toString(),
+                          description: snapShot
+                              .data.documents[index].data['shopDescription']
+                              .toString(),
+                          photo: snapShot
+                              .data.documents[index].data['shopPhoto']
+                              .toString(),
+                          phoneNo: snapShot
+                              .data.documents[index].data['shopPhoneNo']
                               .toString());
                     }));
                   },

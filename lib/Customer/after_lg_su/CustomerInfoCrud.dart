@@ -32,4 +32,22 @@ class CustomerInfoCrud {
         .collection('timeLine')
         .snapshots();
   }
+
+  getBookedOrNot(uid) async {
+    return Firestore.instance
+        .collection('seller')
+        .document(uid)
+        .collection('timeLine')
+        .getDocuments();
+  }
+
+  bookingUpdate(uid, bookTime) {
+    Firestore.instance
+        .collection('seller')
+        .document(uid)
+        .collection('timeLine')
+        .document(uid)
+        .updateData(bookTime)
+        .catchError((e) => print(e));
+  }
 }
