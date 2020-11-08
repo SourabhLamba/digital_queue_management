@@ -114,62 +114,73 @@ class _HomeSState extends State<HomeS> {
           return ListView.builder(
               itemCount: timeInterval.length,
               itemBuilder: (context, index) {
-                if (snapShot.data.documents[0].data[index.toString()]
-                        .toString() !=
-                    "null") {
-                  String userInfo = snapShot
-                      .data.documents[0].data[index.toString()]
-                      .toString()
-                      .split('.')
-                      .first;
-                  if (userInfo == 'S') userInfo = 'Not booked yet';
+                if (snapShot.data != null) {
+                  if (snapShot.data.documents[0].data[index.toString()] !=
+                      null) {
+                    String userInfo = snapShot
+                        .data.documents[0].data[index.toString()]
+                        .toString()
+                        .split('.')
+                        .first;
+                    if (userInfo == 'S') userInfo = 'Not booked yet';
 
-                  String timeFrame = snapShot
-                      .data.documents[0].data[index.toString()]
-                      .toString()
-                      .split('.')
-                      .last;
-                  return Container(
-                    padding: EdgeInsets.fromLTRB(7.0, 5.0, 7.0, 5.0),
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(8.0)),
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (builder) =>
-                                CustomerDetail(userInfo: userInfo),
-                          ),
-                        );
-                      },
-                      tileColor: _tileColor,
-                      dense: true,
-                      title: Text(
-                        userInfo,
-                      ),
-                      subtitle: Text(
-                        timeFrame,
-                      ),
-                      leading: Icon(
-                        Icons.account_circle,
-                      ),
-                      trailing: Icon(
-                        Icons.keyboard_arrow_right,
-                      ),
-                    ),
-                  );
-                } else {
-                  return Container(
-                    padding: EdgeInsets.fromLTRB(7.0, 5.0, 7.0, 5.0),
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(8.0)),
-                    child: ListTile(
+                    String timeFrame = snapShot
+                        .data.documents[0].data[index.toString()]
+                        .toString()
+                        .split('.')
+                        .last;
+                    return Container(
+                      padding: EdgeInsets.fromLTRB(7.0, 5.0, 7.0, 5.0),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0)),
+                      child: ListTile(
+                        onTap: () {
+                          if (userInfo == 'Not booked yet') {
+                            Scaffold.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(userInfo),
+                              ),
+                            );
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (builder) =>
+                                    CustomerDetail(userInfo: userInfo),
+                              ),
+                            );
+                          }
+                        },
+                        tileColor: userInfo == 'Not booked yet'
+                            ? _tileColor
+                            : Colors.greenAccent,
                         dense: true,
-                        leading: Icon(Icons.close),
-                        tileColor: Colors.red[300],
-                        title: Text(timeInterval[index])),
-                  );
+                        title: Text(
+                          userInfo,
+                        ),
+                        subtitle: Text(
+                          timeFrame,
+                        ),
+                        leading: Icon(
+                          Icons.account_circle,
+                        ),
+                        trailing: Icon(
+                          Icons.keyboard_arrow_right,
+                        ),
+                      ),
+                    );
+                  } else {
+                    return Container(
+                      padding: EdgeInsets.fromLTRB(7.0, 5.0, 7.0, 5.0),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0)),
+                      child: ListTile(
+                          dense: true,
+                          leading: Icon(Icons.close),
+                          tileColor: Colors.red[300],
+                          title: Text(timeInterval[index])),
+                    );
+                  }
                 }
               });
         });

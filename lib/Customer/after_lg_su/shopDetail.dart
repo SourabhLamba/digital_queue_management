@@ -1,7 +1,7 @@
 import 'package:digi_queue/Customer/after_lg_su/CustomerInfoCrud.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ShopDetail extends StatefulWidget {
   String uid, name, phoneNo, photo, description, address;
@@ -34,10 +34,12 @@ class _ShopDetailState extends State<ShopDetail> {
   List<String> timeLines;
   Map<int, String> book;
   Box<String> userId;
+  Box<List<String>> shopBookedList;
   String bookedTime;
 
   @override
   void initState() {
+    shopBookedList = Hive.box<List<String>>('shopBookedDetail');
     userId = Hive.box<String>("userId");
     timeLines = List<String>();
     book = Map<int, String>();
@@ -97,6 +99,10 @@ class _ShopDetailState extends State<ShopDetail> {
                 .first ==
             userId.getAt(0).toString()) {
           setState(() {
+            bookedTime = result.documents[0].data[i.toString()]
+                .toString()
+                .split('.')
+                .last;
             isBooked = true;
             isLoading2 = false;
           });
@@ -156,6 +162,9 @@ class _ShopDetailState extends State<ShopDetail> {
                               title: Text(description),
                             ),
                             ListTile(
+                              onTap: () {
+                                _makePhoneCall("tel:$phoneNo",context);
+                              },
                               dense: true,
                               leading: Icon(Icons.call),
                               title: Text(phoneNo),
@@ -293,6 +302,8 @@ class _ShopDetailState extends State<ShopDetail> {
                     bookedTime = time;
                     String p = userId.getAt(0).toString() + "." + time;
                     print(p);
+
+                    shopBookedList.add([name, photo, time, uid]);
                     CustomerInfoCrud()
                         .bookingUpdate(uid, {index.toString(): p});
                     Navigator.of(context).pop();
@@ -311,5 +322,17 @@ class _ShopDetailState extends State<ShopDetail> {
         ],
       ),
     );
+  }
+}
+
+Future<void> _makePhoneCall(String phoneNo, context) async {
+  if (await canLaunch(phoneNo)) { 
+    await launch(
+      phoneNo,
+    );
+  } else {
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text("Unable to make a call"),
+    ));
   }
 }

@@ -25,6 +25,10 @@ class CustomerInfoCrud {
     return Firestore.instance.collection('seller').snapshots();
   }
 
+  getSellerForSearch() async {
+    return Firestore.instance.collection('seller').getDocuments();
+  }
+
   getSellerTimeLine(uid) async {
     return Firestore.instance
         .collection('seller')

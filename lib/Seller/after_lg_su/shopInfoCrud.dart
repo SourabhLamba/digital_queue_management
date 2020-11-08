@@ -55,4 +55,8 @@ class ShopInfoCrud {
         .collection('timeLine')
         .snapshots();
   }
+
+  getCustomerInfo(id, userId) {
+    return Firestore.instance.collection('customer').document(userId).get();
+  }
 }

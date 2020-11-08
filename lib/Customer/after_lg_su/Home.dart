@@ -1,8 +1,9 @@
 import 'package:digi_queue/Customer/after_lg_su/CustomerInfoCrud.dart';
+import 'package:digi_queue/Customer/after_lg_su/Notification.dart';
+import 'package:digi_queue/Customer/after_lg_su/Search.dart';
 import 'package:digi_queue/Customer/after_lg_su/drawer.dart';
 import 'package:digi_queue/Customer/after_lg_su/shopDetail.dart';
 import 'package:flutter/material.dart';
-import 'package:digi_queue/main.dart';
 import 'package:hive/hive.dart';
 
 class Home extends StatefulWidget {
@@ -41,11 +42,31 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return !isLoading && !_isLoading1
         ? Scaffold(
+            floatingActionButton: FloatingActionButton(
+              child: Icon(Icons.search),
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (builder) {
+                  return Search();
+                }));
+              },
+            ),
             drawer:
                 drawer(context, _customerName, _customerEmail, _customerPhoto),
             appBar: AppBar(
               centerTitle: true,
               title: Text("Customer"),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (build) {
+                      return NotificationBooks(_customerName, _customerPhoto);
+                    }));
+                  },
+                  icon: Icon(Icons.notifications),
+                ),
+              ],
             ),
             body: _sellersStream(),
           )

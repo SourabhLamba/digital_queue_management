@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ void main() async {
   await Hive.openBox<String>("whoAreYou");
   await Hive.openBox<String>("userId");
   await Hive.openBox<bool>('isSwitched');
+  await Hive.openBox<List<String>>('shopBookedDetail');
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     home: MyApp(),
@@ -27,6 +29,7 @@ void main() async {
 Box<String> whoAreYou;
 Box<String> userId;
 Box<bool> isSwitched;
+Box<List<String>> shopBookedList;
 
 class MyApp extends StatefulWidget {
   @override
@@ -40,6 +43,7 @@ class _MyAppState extends State<MyApp> {
     whoAreYou = Hive.box<String>("whoAreYou");
     userId = Hive.box<String>('userId');
     isSwitched = Hive.box<bool>('isSwitched');
+    shopBookedList = Hive.box<List<String>>('shopBookedDetail');
     if (whoAreYou.isEmpty) whoAreYou.put(0, "0");
     if (userId.isEmpty) userId.put(0, "0");
     if (isSwitched.isEmpty) isSwitched.put(0, false);
