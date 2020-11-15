@@ -1,10 +1,12 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:digi_queue/Customer/after_lg_su/CustomerInfoCrud.dart';
 import 'package:digi_queue/Customer/after_lg_su/Home.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -39,6 +41,7 @@ class _AccountState extends State<Account> {
     return isUploading == false
         ? Scaffold(
             appBar: AppBar(
+              backgroundColor: Colors.deepPurpleAccent,
               title: Text("Account"),
             ),
             body: _result != null
@@ -49,11 +52,11 @@ class _AccountState extends State<Account> {
                           child: Column(
                         children: [
                           SizedBox(
-                            height: 20,
+                            height: 10,
                           ),
                           Container(
                             color: Colors.grey,
-                            height: MediaQuery.of(context).size.height / 5,
+                            height: MediaQuery.of(context).size.width * 0.8,
                             width: MediaQuery.of(context).size.width * 0.8,
                             child: FlatButton(
                               onPressed: () {
@@ -69,6 +72,15 @@ class _AccountState extends State<Account> {
                                     )
                                   : Image(
                                       image: NetworkImage(_customerPhoto),
+                                      loadingBuilder:
+                                          (context, child, loadingProgress) {
+                                        if (loadingProgress == null)
+                                          return child;
+                                        return SpinKitThreeBounce(
+                                          color: Colors.black38,
+                                          size: 16,
+                                        );
+                                      },
                                     ),
                             ),
                           ),
@@ -127,13 +139,16 @@ class _AccountState extends State<Account> {
                                     MaterialPageRoute(builder: (builder) {
                                   return Home();
                                 }));
+                                showToast('Data Updated');
                               })
                         ],
                       )),
                     ),
                   )
                 : Center(
-                    child: CircularProgressIndicator(),
+                    child: SpinKitFadingCircle(
+                      color: Colors.deepPurpleAccent[700],
+                    ),
                   ))
         : Scaffold(
             body: Center(
@@ -141,7 +156,9 @@ class _AccountState extends State<Account> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(),
+                  SpinKitPouringHourglass(
+                    color: Colors.deepPurpleAccent[700],
+                  ),
                   SizedBox(
                     height: 20,
                   ),
@@ -194,70 +211,112 @@ class _AccountState extends State<Account> {
   }
 
   upLoadImageFromGallery() async {
-    final _storage = FirebaseStorage.instance;
-    final _picker = ImagePicker();
-    PickedFile image;
-
     await Permission.photos.request();
     var permissionState = await Permission.photos.status;
     if (permissionState.isGranted) {
       //Select Image
-
-      image = await _picker.getImage(source: ImageSource.gallery);
-      var file = File(image.path);
-
+      var image = await ImagePicker().getImage(source: ImageSource.gallery);
       if (image != null) {
+        var croppedImage = await ImageCropper.cropImage(
+            aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+            sourcePath: image.path,
+            compressQuality: 70,
+            maxHeight: 700,
+            maxWidth: 700,
+            compressFormat: ImageCompressFormat.jpg,
+            androidUiSettings: AndroidUiSettings(
+              toolbarColor: Colors.deepPurple[700],
+              toolbarWidgetColor: Colors.white,
+              toolbarTitle: "Cropper",
+              statusBarColor: Colors.deepPurple[900],
+              backgroundColor: Colors.white,
+            ));
+        if (croppedImage != null) {
+          //Up load to firebase
+
+          Navigator.pop(context);
+          setState(() {
+            isUploading = true;
+          });
+          var snapShot = await FirebaseStorage.instance
+              .ref()
+              .child('Customer/${userId.getAt(0)}')
+              .putFile(croppedImage)
+              .onComplete;
+
+          var downloadUrl = await snapShot.ref.getDownloadURL();
+          CustomerInfoCrud().upDateCustomerData(
+              userId.getAt(0), {'customerPhoto': downloadUrl});
+          Navigator.pop(context);
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (builder) {
+            return Home();
+          }));
+          Navigator.push(context, MaterialPageRoute(builder: (builder) {
+            return Account();
+          }));
+        } else
+          showToast("No Path");
+      }
+    } else {
+      showToast("Grant Permission");
+    }
+  }
+
+  upLoadImageFromCamera() async {
+    await Permission.camera.request();
+
+    var image = await ImagePicker().getImage(source: ImageSource.camera);
+    if (image != null) {
+      var croppedImage = await ImageCropper.cropImage(
+          aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+          sourcePath: image.path,
+          compressQuality: 70,
+          maxHeight: 700,
+          maxWidth: 700,
+          compressFormat: ImageCompressFormat.jpg,
+          androidUiSettings: AndroidUiSettings(
+            toolbarColor: Colors.deepPurple[700],
+            toolbarTitle: "Cropper",
+            toolbarWidgetColor: Colors.white,
+            statusBarColor: Colors.deepPurple[900],
+            backgroundColor: Colors.white,
+          ));
+      if (croppedImage != null) {
         //Up load to firebase
+
         Navigator.pop(context);
         setState(() {
           isUploading = true;
         });
-        var snapShot = await _storage
+        var snapShot = await FirebaseStorage.instance
             .ref()
             .child('Customer/${userId.getAt(0)}')
-            .putFile(file)
+            .putFile(croppedImage)
             .onComplete;
 
         var downloadUrl = await snapShot.ref.getDownloadURL();
         CustomerInfoCrud().upDateCustomerData(
             userId.getAt(0), {'customerPhoto': downloadUrl});
+        Navigator.pop(context);
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (builder) {
+          return Home();
+        }));
+        Navigator.push(context, MaterialPageRoute(builder: (builder) {
           return Account();
         }));
       } else
-        print("NO path");
-    } else {
-      print("Grant Permission");
-    }
+        showToast("No Path");
+    } else
+      showToast("Grant Permission");
   }
 
-  upLoadImageFromCamera() async {
-    final _storage = FirebaseStorage.instance;
-    final _picker = ImagePicker();
-    PickedFile image;
-
-    await Permission.camera.request();
-    var permissionState = await Permission.camera.status;
-    if (permissionState.isGranted) {
-      //Select Image
-
-      image = await _picker.getImage(source: ImageSource.camera);
-      var file = File(image.path);
-
-      if (image != null) {
-        //Up load to firebase
-        var snapShot = await _storage
-            .ref()
-            .child('Customer/${userId.getAt(0)}')
-            .putFile(file)
-            .onComplete;
-        CustomerInfoCrud().upDateCustomerData(
-            userId.getAt(0), {'customerPhoto': snapShot.ref.getDownloadURL()});
-      } else
-        print("NO path");
-    } else {
-      print("Grant Permission");
-    }
+  showToast(String msg) {
+    Fluttertoast.showToast(
+      msg: msg,
+      gravity: ToastGravity.CENTER,
+      toastLength: Toast.LENGTH_SHORT,
+    );
   }
 }

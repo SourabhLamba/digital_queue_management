@@ -16,6 +16,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String _email = "", _password = "";
   Box<String> whoAreYou;
+  Box<String> userId;
 
   bool isLoading = false;
 
@@ -23,18 +24,24 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     whoAreYou = Hive.box<String>("whoAreYou");
+    userId = Hive.box<String>("userId");
   }
 
   @override
   Widget build(BuildContext context) {
-    return isLoading == true
+    return isLoading
         ? AlertDialog(
+            title: Center(
+              child: Text(
+                "Loading",
+              ),
+            ),
             content: Container(
               height: MediaQuery.of(context).size.height / 6,
               width: MediaQuery.of(context).size.width / 6,
               child: Center(
                 child: SpinKitWave(
-                  color: Colors.teal,
+                  color: Colors.deepPurple[700],
                 ),
               ),
             ),
@@ -97,6 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                                   1.2,
                                   TextField(
                                     decoration: InputDecoration(
+                                        prefixIcon: Icon(Icons.email),
                                         border: OutlineInputBorder(),
                                         labelText: "Email"),
                                     onChanged: (value) {
@@ -111,6 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                                   TextField(
                                     obscureText: true,
                                     decoration: InputDecoration(
+                                        prefixIcon: Icon(Icons.lock),
                                         border: OutlineInputBorder(),
                                         labelText: "Password"),
                                     onChanged: (value) {
@@ -151,29 +160,46 @@ class _LoginPageState extends State<LoginPage> {
                                               password: _password)
                                           .then((value) {
                                         whoAreYou.putAt(0, "customer");
+                                        userId.putAt(
+                                            0, value.user.uid.toString());
                                         if (value.user != null) {
+                                          print(value.user.uid);
                                           Navigator.pop(context);
                                           Navigator.pushReplacement(context,
                                               MaterialPageRoute(
                                                   builder: (context) {
                                             return Home();
                                           }));
+                                        } else {
+                                          Fluttertoast.showToast(
+                                            msg: "User Not Created",
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.CENTER,
+                                          );
+                                          setState(() {
+                                            isLoading = false;
+                                          });
                                         }
                                       }).catchError((e) {
-                                        if (e.code.toString() ==
-                                            "ERROR_WRONG_PASSWORD")
-                                          setState(() => isLoading = false);
-                                        print(e.code.toString());
+                                        Fluttertoast.showToast(
+                                          msg: e.message.toString(),
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.CENTER,
+                                        );
+                                        setState(() {
+                                          isLoading = false;
+                                        });
                                       });
                                     }
                                   },
-                                  color: Colors.greenAccent,
+                                  color: Colors.deepPurpleAccent,
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(50)),
                                   child: Text(
                                     "Login",
                                     style: TextStyle(
+                                        color: Colors.white,
                                         fontWeight: FontWeight.w600,
                                         fontSize: 18),
                                   ),
@@ -201,8 +227,10 @@ class _LoginPageState extends State<LoginPage> {
                                   child: Text(
                                     "Sign up",
                                     style: TextStyle(
+                                        color: Colors.deepPurpleAccent,
                                         fontWeight: FontWeight.w600,
-                                        fontSize: 18),
+                                        fontSize: 18,
+                                    ),
                                   ),
                                 ),
                               ],

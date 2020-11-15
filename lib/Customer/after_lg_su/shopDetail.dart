@@ -1,10 +1,12 @@
 import 'package:digi_queue/Customer/after_lg_su/CustomerInfoCrud.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ShopDetail extends StatefulWidget {
-  String uid, name, phoneNo, photo, description, address;
+  final uid, name, phoneNo, photo, description, address;
   ShopDetail(
       {this.uid,
       this.name,
@@ -34,16 +36,22 @@ class _ShopDetailState extends State<ShopDetail> {
   List<String> timeLines;
   Map<int, String> book;
   Box<String> userId;
-  Box<List<String>> shopBookedList;
+  //Box<List<String>> shopBookedList;
   String bookedTime;
 
   @override
   void initState() {
-    shopBookedList = Hive.box<List<String>>('shopBookedDetail');
+    //shopBookedList = Hive.box<List<String>>('shopBookedDetail');
     userId = Hive.box<String>("userId");
     timeLines = List<String>();
     book = Map<int, String>();
     timeLines.addAll({
+      '7:00 am',
+      '7:20 am',
+      '7:40 am',
+      '8:00 am',
+      '8:20 am',
+      '8:40 am',
       '9:00 am',
       '9:20 am',
       '9:40 am',
@@ -83,6 +91,10 @@ class _ShopDetailState extends State<ShopDetail> {
       '9:00 pm',
       '9:20 pm',
       '9:40 pm',
+      '10:00 pm',
+      '10:20 pm',
+      '10:40 pm',
+      '11:00 pm'
     });
     CustomerInfoCrud().getSellerTimeLine(uid).then((result) {
       setState(() {
@@ -120,74 +132,93 @@ class _ShopDetailState extends State<ShopDetail> {
     return isLoading2 == false
         ? Scaffold(
             appBar: AppBar(
+              backgroundColor: Colors.deepPurpleAccent,
               title: Text("Shop Details"),
               centerTitle: true,
             ),
             body: Container(
               padding: EdgeInsets.all(8.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                        height: MediaQuery.of(context).size.height / 2 + 10,
-                        width: MediaQuery.of(context).size.width,
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(5.0),
-                              height:
-                                  2 * MediaQuery.of(context).size.height / 9,
-                              width: MediaQuery.of(context).size.width,
-                              child: Image.network(
-                                photo,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            ListTile(
-                              dense: true,
-                              leading: Icon(Icons.home),
-                              title: Text(name),
-                            ),
-                            ListTile(
-                              dense: true,
-                              leading: Icon(Icons.map),
-                              title: Text(address),
-                            ),
-                            ListTile(
-                              dense: true,
-                              leading: Icon(Icons.details),
-                              title: Text(description),
-                            ),
-                            ListTile(
-                              onTap: () {
-                                _makePhoneCall("tel:$phoneNo",context);
-                              },
-                              dense: true,
-                              leading: Icon(Icons.call),
-                              title: Text(phoneNo),
-                            ),
-                          ],
-                        )),
-                    Container(
-                      height: MediaQuery.of(context).size.height / 2,
+              child: Column(
+                children: [
+                  Container(
+                      height: MediaQuery.of(context).size.height / 2 + 10,
                       width: MediaQuery.of(context).size.width,
-                      child: isBooked == false
-                          ? sellerDetailStream()
-                          : Center(
-                              child: Text("Already Booked at $bookedTime"),
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(5.0),
+                            height:
+                                2 * MediaQuery.of(context).size.height / 9,
+                            width: MediaQuery.of(context).size.width,
+                            child: Image.network(
+                              photo,
+                              fit: BoxFit.cover,
                             ),
-                    ),
-                  ],
-                ),
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          ListTile(
+                            dense: true,
+                            leading: Icon(Icons.home),
+                            title: Text(name),
+                          ),
+                          ListTile(
+                            dense: true,
+                            leading: Icon(Icons.map),
+                            title: Text(address),
+                          ),
+                          ListTile(
+                            dense: true,
+                            leading: Icon(Icons.details),
+                            title: Text(description),
+                          ),
+                          ListTile(
+                            onTap: () {
+                              _makePhoneCall("tel:$phoneNo", context);
+                            },
+                            dense: true,
+                            leading: Icon(Icons.call),
+                            title: Text(phoneNo),
+                          ),
+                        ],
+                      )),
+                  Expanded(
+                    child: isBooked == false
+                        ? sellerDetailStream()
+                        : Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Already Booked at",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                Text(
+                                  bookedTime,
+                                  style: TextStyle(
+                                    color: Colors.deepPurpleAccent,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                  ),
+                ],
               ),
             ),
           )
         : Scaffold(
             body: Center(
-              child: CircularProgressIndicator(),
+              child: SpinKitFadingCircle(
+                color: Colors.purple[700],
+              ),
             ),
           );
   }
@@ -216,7 +247,7 @@ class _ShopDetailState extends State<ShopDetail> {
                           borderRadius: BorderRadius.circular(8.0)),
                       child: ListTile(
                           dense: true,
-                          tileColor: Colors.blue[300],
+                          tileColor: Colors.purple[300],
                           title: Text(timeLines[index])),
                     );
                   } else if (snapShot.data.documents[0].data[index.toString()]
@@ -239,10 +270,6 @@ class _ShopDetailState extends State<ShopDetail> {
                       snapShot.data.documents[0].data[index.toString()]
                               .toString() !=
                           "null") {
-                    print(snapShot.data.documents[0].data[index.toString()]
-                        .toString()
-                        .split('.')
-                        .first);
                     String timeFrame = snapShot
                         .data.documents[0].data[index.toString()]
                         .toString()
@@ -270,6 +297,10 @@ class _ShopDetailState extends State<ShopDetail> {
                     );
                   }
                 }
+                return SizedBox(
+                  height: 0,
+                  width: MediaQuery.of(context).size.width,
+                );
               });
         });
   }
@@ -301,12 +332,25 @@ class _ShopDetailState extends State<ShopDetail> {
                     isBooked = true;
                     bookedTime = time;
                     String p = userId.getAt(0).toString() + "." + time;
-                    print(p);
 
-                    shopBookedList.add([name, photo, time, uid]);
+                    //var data;
+
+                    //shopBookedList.add([name, photo, time, uid]);
+
+                    CustomerInfoCrud().addbooking({
+                      "name": name,
+                      "photo": photo,
+                      "time": time,
+                    }, userId.getAt(0), name);
+
                     CustomerInfoCrud()
-                        .bookingUpdate(uid, {index.toString(): p});
+                        .bookingUpdateOnSellerSide(uid, {index.toString(): p});
                     Navigator.of(context).pop();
+                    Fluttertoast.showToast(
+                      msg: "Booked",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                    );
                     setState(() {});
                   },
                   child: Text("Book")),
@@ -314,11 +358,16 @@ class _ShopDetailState extends State<ShopDetail> {
                   padding: EdgeInsets.all(10),
                   color: Colors.red[300],
                   onPressed: () {
+                    Fluttertoast.showToast(
+                      msg: "Canceled",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                    );
                     Navigator.of(context).pop();
                   },
                   child: Text("Cancel"))
             ],
-          )
+          ),
         ],
       ),
     );
@@ -326,13 +375,15 @@ class _ShopDetailState extends State<ShopDetail> {
 }
 
 Future<void> _makePhoneCall(String phoneNo, context) async {
-  if (await canLaunch(phoneNo)) { 
+  if (await canLaunch(phoneNo)) {
     await launch(
       phoneNo,
     );
   } else {
-    Scaffold.of(context).showSnackBar(SnackBar(
-      content: Text("Unable to make a call"),
-    ));
+    Fluttertoast.showToast(
+      msg: "Unable To Make The Call",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+    );
   }
 }

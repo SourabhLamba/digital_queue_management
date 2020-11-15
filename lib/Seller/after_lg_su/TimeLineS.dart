@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:digi_queue/Seller/after_lg_su/HomeS.dart';
 import 'package:digi_queue/Seller/after_lg_su/shopInfoCrud.dart';
@@ -21,6 +23,12 @@ class _TimeLineSState extends State<TimeLineS> {
     timeLine = Map<String, String>();
     timeSelected = List<String>();
     timeSelected.addAll({
+      '7:00 am',
+      '7:20 am',
+      '7:40 am',
+      '8:00 am',
+      '8:20 am',
+      '8:40 am',
       '9:00 am',
       '9:20 am',
       '9:40 am',
@@ -60,6 +68,10 @@ class _TimeLineSState extends State<TimeLineS> {
       '9:00 pm',
       '9:20 pm',
       '9:40 pm',
+      '10:00 pm',
+      '10:20 pm',
+      '10:40 pm',
+      '11:00 pm'
     });
     isSwitched = Hive.box<bool>('isSwitched');
     _isLoading = true;
@@ -81,6 +93,7 @@ class _TimeLineSState extends State<TimeLineS> {
     return _isLoading == false
         ? Scaffold(
             appBar: AppBar(
+              backgroundColor: Colors.blueAccent[700],
               centerTitle: true,
               title: Text("Time Line"),
               actions: <Widget>[
@@ -101,6 +114,11 @@ class _TimeLineSState extends State<TimeLineS> {
                               MaterialPageRoute(builder: (builder) {
                             return HomeS();
                           }));
+                          Fluttertoast.showToast(
+                            msg: 'Shop Opened',
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                          );
                         });
                       } else {
                         ShopInfoCrud()
@@ -113,6 +131,10 @@ class _TimeLineSState extends State<TimeLineS> {
                               MaterialPageRoute(builder: (builder) {
                             return HomeS();
                           }));
+                          Fluttertoast.showToast(
+                              msg: 'Shop Closed',
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER);
                         });
                       }
                     },
@@ -123,14 +145,23 @@ class _TimeLineSState extends State<TimeLineS> {
               ],
             ),
             body: Container(
+              color: Colors.white,
               padding: EdgeInsets.all(10),
               child: _isOpen == false
                   ? grids()
-                  : Center(child: Text("Shop is now Open")),
+                  : Center(
+                      child: Image.asset(
+                        'assets/images/open.jpg',
+                        height: MediaQuery.of(context).size.width / 2,
+                        width: MediaQuery.of(context).size.width / 2,
+                      ),
+                    ),
             ))
         : Scaffold(
             body: Center(
-              child: CircularProgressIndicator(),
+              child: SpinKitFadingCircle(
+                color: Colors.blue[700],
+              ),
             ),
           );
   }
@@ -145,7 +176,7 @@ class _TimeLineSState extends State<TimeLineS> {
       mainAxisSpacing: MediaQuery.of(context).size.height / 40,
       crossAxisSpacing: MediaQuery.of(context).size.width / 30,
       crossAxisCount: 3,
-      children: List.generate(36, (index) {
+      children: List.generate(49, (index) {
         return Container(
             height: 30,
             child: timeSelected[index].contains('S')

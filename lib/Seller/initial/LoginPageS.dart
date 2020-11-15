@@ -31,12 +31,15 @@ class _LoginPageSState extends State<LoginPageS> {
   Widget build(BuildContext context) {
     return isLoading == true
         ? AlertDialog(
+            title: Center(
+              child: Text("Loading"),
+            ),
             content: Container(
               height: MediaQuery.of(context).size.height / 6,
               width: MediaQuery.of(context).size.width / 6,
               child: Center(
                 child: SpinKitWave(
-                  color: Colors.yellowAccent,
+                  color: Colors.blue[900],
                 ),
               ),
             ),
@@ -99,6 +102,7 @@ class _LoginPageSState extends State<LoginPageS> {
                                   1.2,
                                   TextField(
                                     decoration: InputDecoration(
+                                        prefixIcon: Icon(Icons.email),
                                         border: OutlineInputBorder(),
                                         labelText: "Email"),
                                     onChanged: (value) {
@@ -113,6 +117,7 @@ class _LoginPageSState extends State<LoginPageS> {
                                   TextField(
                                     obscureText: true,
                                     decoration: InputDecoration(
+                                        prefixIcon: Icon(Icons.lock),
                                         border: OutlineInputBorder(),
                                         labelText: "Password"),
                                     onChanged: (value) {
@@ -164,22 +169,28 @@ class _LoginPageSState extends State<LoginPageS> {
                                           }));
                                         }
                                       }).catchError((e) {
-                                        if (e.code.toString() ==
-                                            "ERROR_WRONG_PASSWORD")
-                                          setState(() => isLoading = false);
-                                        print(e.code.toString());
+                                        Fluttertoast.showToast(
+                                          msg: e.message.toString(),
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.CENTER,
+                                        );
+                                        setState(() {
+                                          isLoading = false;
+                                        });
                                       });
                                     }
                                   },
-                                  color: Colors.yellow,
+                                  color: Colors.blueAccent[700],
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(50)),
                                   child: Text(
                                     "Login",
                                     style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18),
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -206,7 +217,8 @@ class _LoginPageSState extends State<LoginPageS> {
                                     "Sign up",
                                     style: TextStyle(
                                         fontWeight: FontWeight.w600,
-                                        fontSize: 18),
+                                        fontSize: 18,
+                                      color: Colors.blueAccent[700],),
                                   ),
                                 ),
                               ],

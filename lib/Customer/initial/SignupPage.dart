@@ -32,12 +32,17 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     return isLoading == true
         ? AlertDialog(
+            title: Center(
+              child: Text(
+                "Loading",
+              ),
+            ),
             content: Container(
               height: MediaQuery.of(context).size.height / 6,
               width: MediaQuery.of(context).size.width / 6,
               child: Center(
                 child: SpinKitWave(
-                  color: Colors.teal[800],
+                  color: Colors.deepPurple[700],
                 ),
               ),
             ),
@@ -93,6 +98,7 @@ class _SignupPageState extends State<SignupPage> {
                             1.2,
                             TextField(
                               decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.email),
                                   border: OutlineInputBorder(),
                                   labelText: "Email"),
                               onChanged: (value) {
@@ -107,6 +113,7 @@ class _SignupPageState extends State<SignupPage> {
                             TextField(
                               obscureText: true,
                               decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.lock),
                                   border: OutlineInputBorder(),
                                   labelText: "Password"),
                               onChanged: (value) {
@@ -160,8 +167,6 @@ class _SignupPageState extends State<SignupPage> {
                                 Fluttertoast.showToast(
                                     msg: "Password Mismatch",
                                     toastLength: Toast.LENGTH_SHORT,
-                                    textColor: Colors.white,
-                                    backgroundColor: Colors.tealAccent[300],
                                     gravity: ToastGravity.CENTER);
                               } else {
                                 setState(() => isLoading = true);
@@ -184,21 +189,35 @@ class _SignupPageState extends State<SignupPage> {
                                         MaterialPageRoute(builder: (context) {
                                       return Home();
                                     }));
-                                  } else
+                                  } else {
+                                    Fluttertoast.showToast(
+                                      msg: "User Not Created",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                    );
                                     setState(() => isLoading = false);
+                                  }
                                 }).catchError((e) {
-                                  print(e);
+                                  Fluttertoast.showToast(
+                                    msg: e.message.toString(),
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.CENTER,
+                                  );
+                                  setState(() => isLoading = false);
                                 });
                               }
                             },
-                            color: Colors.greenAccent,
+                            color: Colors.deepPurpleAccent,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50)),
                             child: Text(
                               "Sign up",
                               style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 18),
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18,
+                              ),
                             ),
                           ),
                         )),
@@ -219,7 +238,10 @@ class _SignupPageState extends State<SignupPage> {
                               child: Text(
                                 "Login",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.w600, fontSize: 18),
+                                    color: Colors.deepPurpleAccent,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                ),
                               ),
                             ),
                           ],

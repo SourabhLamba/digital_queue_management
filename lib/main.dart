@@ -1,10 +1,8 @@
-import 'dart:collection';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
-import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:digi_queue/Seller/after_lg_su/HomeS.dart';
 import 'Customer/Welcome.dart';
@@ -19,8 +17,10 @@ void main() async {
   await Hive.openBox<String>("whoAreYou");
   await Hive.openBox<String>("userId");
   await Hive.openBox<bool>('isSwitched');
-  await Hive.openBox<List<String>>('shopBookedDetail');
   runApp(MaterialApp(
+    title: "Digi Queue",
+    theme: ThemeData.light(
+    ),
     debugShowCheckedModeBanner: false,
     home: MyApp(),
   ));
@@ -29,7 +29,6 @@ void main() async {
 Box<String> whoAreYou;
 Box<String> userId;
 Box<bool> isSwitched;
-Box<List<String>> shopBookedList;
 
 class MyApp extends StatefulWidget {
   @override
@@ -43,7 +42,6 @@ class _MyAppState extends State<MyApp> {
     whoAreYou = Hive.box<String>("whoAreYou");
     userId = Hive.box<String>('userId');
     isSwitched = Hive.box<bool>('isSwitched');
-    shopBookedList = Hive.box<List<String>>('shopBookedDetail');
     if (whoAreYou.isEmpty) whoAreYou.put(0, "0");
     if (userId.isEmpty) userId.put(0, "0");
     if (isSwitched.isEmpty) isSwitched.put(0, false);
@@ -58,8 +56,13 @@ class _MyAppState extends State<MyApp> {
           return Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            child: Center(
-              child: Lottie.asset('assets/lottie/social_distancing.json'),
+            child: Container(
+              color: Colors.white,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: Center(
+                child: Image.asset('assets/images/logo.jpg',height: 100,width: 100,),
+              ),
             ),
           );
         }
@@ -100,27 +103,59 @@ class HPage extends StatelessWidget {
             SizedBox(
               height: 20,
             ),
-            FlatButton(
-              color: Colors.yellow,
-              child: Text("Seller"),
-              onPressed: () => Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) {
-                  return WelcomeS();
-                }),
+            FadeAnimation(
+              1.2,
+              GestureDetector(
+                onTap: () => Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return WelcomeS();
+                  }),
+                ),
+                child: Image.asset(
+                  'assets/images/seller.jpg',
+                  height: MediaQuery.of(context).size.height / 4,
+                  width: MediaQuery.of(context).size.height / 4,
+                ),
+              ),
+            ),
+            FadeAnimation(
+              1.3,
+              Text(
+                "Seller",
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 20,
+                ),
               ),
             ),
             SizedBox(
               height: 20,
             ),
-            FlatButton(
-              color: Colors.tealAccent,
-              child: Text("Customer"),
-              onPressed: () => Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) {
-                  return Welcome();
-                }),
+            FadeAnimation(
+              1.4,
+              GestureDetector(
+                onTap: () => Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return Welcome();
+                  }),
+                ),
+                child: Image.asset(
+                  'assets/images/customer.jpg',
+                  height: MediaQuery.of(context).size.height / 4,
+                  width: MediaQuery.of(context).size.height / 4,
+                ),
+              ),
+            ),
+            FadeAnimation(
+              1.5,
+              Text(
+                "Customer",
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 20,
+                ),
               ),
             ),
           ],

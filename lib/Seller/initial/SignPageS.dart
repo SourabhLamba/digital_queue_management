@@ -6,7 +6,6 @@ import 'package:digi_queue/Seller/after_lg_su/HomeS.dart';
 import 'package:digi_queue/Seller/after_lg_su/shopInfoCrud.dart';
 import 'package:digi_queue/animation/FadeAnimation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 import 'LoginPageS.dart';
 
 class SignupPageS extends StatefulWidget {
@@ -32,12 +31,15 @@ class _SignupPageSState extends State<SignupPageS> {
   Widget build(BuildContext context) {
     return isLoading == true
         ? AlertDialog(
+            title: Center(
+              child: Text("Loading"),
+            ),
             content: Container(
               height: MediaQuery.of(context).size.height / 6,
               width: MediaQuery.of(context).size.width / 6,
               child: Center(
                 child: SpinKitWave(
-                  color: Colors.teal[800],
+                  color: Colors.blue[900],
                 ),
               ),
             ),
@@ -93,6 +95,7 @@ class _SignupPageSState extends State<SignupPageS> {
                             1.2,
                             TextField(
                               decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.email),
                                   border: OutlineInputBorder(),
                                   labelText: "Email"),
                               onChanged: (value) {
@@ -107,6 +110,7 @@ class _SignupPageSState extends State<SignupPageS> {
                             TextField(
                               obscureText: true,
                               decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.lock),
                                   border: OutlineInputBorder(),
                                   labelText: "Password"),
                               onChanged: (value) {
@@ -121,6 +125,7 @@ class _SignupPageSState extends State<SignupPageS> {
                             TextField(
                               obscureText: true,
                               decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.https),
                                   border: OutlineInputBorder(),
                                   labelText: "Confirm Password"),
                               onChanged: (value) {
@@ -160,8 +165,6 @@ class _SignupPageSState extends State<SignupPageS> {
                                 Fluttertoast.showToast(
                                     msg: "Password Mismatch",
                                     toastLength: Toast.LENGTH_SHORT,
-                                    textColor: Colors.white,
-                                    backgroundColor: Colors.tealAccent[300],
                                     gravity: ToastGravity.CENTER);
                               } else {
                                 setState(() => isLoading = true);
@@ -180,24 +183,41 @@ class _SignupPageSState extends State<SignupPageS> {
 
                                   ShopInfoCrud()
                                       .createShop(value.user.uid, shopData);
-                                  Navigator.pop(context);
-                                  Navigator.pushReplacement(context,
-                                      MaterialPageRoute(builder: (context) {
-                                    return HomeS();
-                                  }));
+                                  if (value.user != null) {
+                                    Navigator.pop(context);
+                                    Navigator.pushReplacement(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return HomeS();
+                                    }));
+                                  } else {
+                                    Fluttertoast.showToast(
+                                      msg: "User Not Created",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                    );
+                                    setState(() => isLoading = false);
+                                  }
                                 }).catchError((e) {
-                                  print(e);
+                                  Fluttertoast.showToast(
+                                    msg: e.message.toString(),
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.CENTER,
+                                  );
+                                  setState(() => isLoading = false);
                                 });
                               }
                             },
-                            color: Colors.yellow,
+                            color: Colors.blueAccent[700],
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50)),
                             child: Text(
                               "Sign up",
                               style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 18),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         )),
@@ -218,7 +238,10 @@ class _SignupPageSState extends State<SignupPageS> {
                               child: Text(
                                 "Login",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.w600, fontSize: 18),
+                                    color: Colors.blueAccent[700],
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                ),
                               ),
                             ),
                           ],

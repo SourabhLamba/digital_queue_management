@@ -29,19 +29,25 @@ class _WelcomeState extends State<Welcome> {
                 children: <Widget>[
                   FadeAnimation(
                       1,
-                      Text(
-                        "Welcome Customer",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 40),
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Text(
+                          "Welcome \nCustomer",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w900, fontSize: 40),
+                        ),
                       )),
                   SizedBox(
                     height: 20,
                   ),
                   FadeAnimation(
                       1.2,
-                      Text(
-                        "Queue Management",
-                        style: TextStyle(fontSize: 20),
+                      Align(
+                        alignment:Alignment.topCenter,
+                        child: Text(
+                          "Queue Management",
+                          style: TextStyle(fontSize: 25,fontWeight: FontWeight.w700,color: Colors.deepPurpleAccent[400],),
+                        ),
                       )),
                   SizedBox(
                     height: 20,
@@ -100,14 +106,16 @@ class _WelcomeState extends State<Welcome> {
                                 MaterialPageRoute(
                                     builder: (context) => SignupPage()));
                           },
-                          color: Colors.yellow,
+                          color: Colors.deepPurpleAccent,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50)),
                           child: Text(
                             "Sign up",
                             style: TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 18),
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18),
                           ),
                         ),
                       ))

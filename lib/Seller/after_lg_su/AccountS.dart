@@ -1,8 +1,10 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:digi_queue/Seller/after_lg_su/HomeS.dart';
@@ -40,6 +42,7 @@ class _AccountSState extends State<AccountS> {
     return isUploading == false
         ? Scaffold(
             appBar: AppBar(
+              backgroundColor: Colors.blueAccent[700],
               title: Text("Account"),
             ),
             body: _result != null
@@ -50,11 +53,11 @@ class _AccountSState extends State<AccountS> {
                           child: Column(
                         children: [
                           SizedBox(
-                            height: 20,
+                            height: 10,
                           ),
                           Container(
                             color: Colors.grey,
-                            height: MediaQuery.of(context).size.height / 5,
+                            height: MediaQuery.of(context).size.width * 0.6,
                             width: MediaQuery.of(context).size.width * 0.8,
                             child: FlatButton(
                               onPressed: () {
@@ -70,6 +73,15 @@ class _AccountSState extends State<AccountS> {
                                     )
                                   : Image(
                                       image: NetworkImage(_shopPhoto),
+                                      loadingBuilder:
+                                          (context, child, loadingProgress) {
+                                        if (loadingProgress == null)
+                                          return child;
+                                        return SpinKitThreeBounce(
+                                          color: Colors.black38,
+                                          size: 16,
+                                        );
+                                      },
                                     ),
                             ),
                           ),
@@ -141,21 +153,27 @@ class _AccountSState extends State<AccountS> {
                                     MaterialPageRoute(builder: (builder) {
                                   return HomeS();
                                 }));
+                                showToast('Data Updated');
                               })
                         ],
                       )),
                     ),
                   )
                 : Center(
-                    child: CircularProgressIndicator(),
-                  ))
+                    child: SpinKitFadingCircle(
+                      color: Colors.blue[700],
+                    ),
+                  ),
+          )
         : Scaffold(
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(),
+                  SpinKitPouringHourglass(
+                    color: Colors.blue[700],
+                  ),
                   SizedBox(
                     height: 20,
                   ),
@@ -208,70 +226,108 @@ class _AccountSState extends State<AccountS> {
   }
 
   upLoadImageFromGallery() async {
-    final _storage = FirebaseStorage.instance;
-    final _picker = ImagePicker();
-    PickedFile image;
-
     await Permission.photos.request();
     var permissionState = await Permission.photos.status;
     if (permissionState.isGranted) {
       //Select Image
-
-      image = await _picker.getImage(source: ImageSource.gallery);
-      var file = File(image.path);
-
+      var image = await ImagePicker().getImage(source: ImageSource.gallery);
       if (image != null) {
-        //Up load to firebase
-        Navigator.pop(context);
-        setState(() {
-          isUploading = true;
-        });
-        var snapShot = await _storage
-            .ref()
-            .child('Seller/${userId.getAt(0)}')
-            .putFile(file)
-            .onComplete;
+        var croppedImage = await ImageCropper.cropImage(
+            aspectRatio: CropAspectRatio(ratioX: 4, ratioY: 3),
+            sourcePath: image.path,
+            compressQuality: 70,
+            maxHeight: 700,
+            maxWidth: 700,
+            compressFormat: ImageCompressFormat.jpg,
+            androidUiSettings: AndroidUiSettings(
+              toolbarColor: Colors.blue[700],
+              toolbarWidgetColor: Colors.white,
+              toolbarTitle: "Cropper",
+              statusBarColor: Colors.blue[900],
+              backgroundColor: Colors.white,
+            ));
+        if (croppedImage != null) {
+          //Up load to firebase
 
-        var downloadUrl = await snapShot.ref.getDownloadURL();
-        ShopInfoCrud()
-            .upDateShopData(userId.getAt(0), {'shopPhoto': downloadUrl});
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (builder) {
-          return AccountS();
-        }));
-      } else
-        print("NO path");
+          Navigator.pop(context);
+          setState(() {
+            isUploading = true;
+          });
+          var snapShot = await FirebaseStorage.instance
+              .ref()
+              .child('Seller/${userId.getAt(0)}')
+              .putFile(croppedImage)
+              .onComplete;
+
+          var downloadUrl = await snapShot.ref.getDownloadURL();
+          ShopInfoCrud()
+              .upDateShopData(userId.getAt(0), {'shopPhoto': downloadUrl});
+          Navigator.pop(context);
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (builder) {
+            return HomeS();
+          }));
+          Navigator.push(context, MaterialPageRoute(builder: (builder) {
+            return AccountS();
+          }));
+        } else
+          showToast("No Path");
+      }
     } else {
-      print("Grant Permission");
+      showToast("Grant Permission");
     }
   }
 
   upLoadImageFromCamera() async {
-    final _storage = FirebaseStorage.instance;
-    final _picker = ImagePicker();
-    PickedFile image;
-
     await Permission.camera.request();
-    var permissionState = await Permission.camera.status;
-    if (permissionState.isGranted) {
-      //Select Image
 
-      image = await _picker.getImage(source: ImageSource.camera);
-      var file = File(image.path);
-
-      if (image != null) {
+    var image = await ImagePicker().getImage(source: ImageSource.camera);
+    if (image != null) {
+      var croppedImage = await ImageCropper.cropImage(
+          aspectRatio: CropAspectRatio(ratioX: 4, ratioY: 3),
+          sourcePath: image.path,
+          compressQuality: 70,
+          maxHeight: 700,
+          maxWidth: 700,
+          compressFormat: ImageCompressFormat.jpg,
+          androidUiSettings: AndroidUiSettings(
+            toolbarColor: Colors.blue[700],
+            toolbarTitle: "Cropper",
+            toolbarWidgetColor: Colors.white,
+            statusBarColor: Colors.blue[900],
+            backgroundColor: Colors.white,
+          ));
+      if (croppedImage != null) {
         //Up load to firebase
-        var snapShot = await _storage
-            .ref()
-            .child('Seller/${userId.getAt(0)}')
-            .putFile(file)
-            .onComplete;
+
+        Navigator.pop(context);
+        setState(() {
+          isUploading = true;
+        });
+        var ref =
+            FirebaseStorage.instance.ref().child('Seller/${userId.getAt(0)}');
+        var task = ref.putFile(croppedImage);
+        var taskSnapshot = await task.onComplete;
         ShopInfoCrud().upDateShopData(
-            userId.getAt(0), {'shopPhoto': snapShot.ref.getDownloadURL()});
+            userId.getAt(0), {'shopPhoto': taskSnapshot.ref.getDownloadURL()});
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (builder) {
+          return HomeS();
+        }));
+        Navigator.push(context, MaterialPageRoute(builder: (builder) {
+          return AccountS();
+        }));
       } else
-        print("NO path");
-    } else {
-      print("Grant Permission");
-    }
+        showToast("No Path");
+    } else
+      showToast("Grant Permission");
+  }
+
+  showToast(String msg) {
+    Fluttertoast.showToast(
+      msg: msg,
+      gravity: ToastGravity.CENTER,
+      toastLength: Toast.LENGTH_SHORT,
+    );
   }
 }

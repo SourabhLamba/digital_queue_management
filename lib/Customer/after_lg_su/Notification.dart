@@ -1,20 +1,22 @@
+import 'package:digi_queue/Customer/after_lg_su/CustomerInfoCrud.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hive/hive.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class NotificationBooks extends StatefulWidget {
-  String _customerName, _customerPhoto;
+  final customerName, customerPhoto;
 
-  NotificationBooks(String _customerName, String _customerPhoto) {
-    this._customerName = _customerName;
-    this._customerPhoto = _customerPhoto;
-  }
+  NotificationBooks({this.customerName, this.customerPhoto});
   @override
   _NotificationBooksState createState() =>
-      _NotificationBooksState(_customerName, _customerPhoto);
+      _NotificationBooksState(customerName, customerPhoto);
 }
 
-Box<List<String>> shopBookedList;
+//Box<List<String>> shopBookedList;
 Box<String> userId;
+bool isLoading = true;
+var data;
 
 class _NotificationBooksState extends State<NotificationBooks> {
   String customerName, customerPhoto;
@@ -24,39 +26,44 @@ class _NotificationBooksState extends State<NotificationBooks> {
   }
   @override
   void initState() {
-    shopBookedList = Hive.box<List<String>>('shopBookedDetail');
+    //shopBookedList = Hive.box<List<String>>('shopBookedDetail');
     userId = Hive.box<String>("userId");
     super.initState();
+
+    CustomerInfoCrud().getBookings(userId.getAt(0)).then((result) {
+      setState(() {
+        data = result;
+        isLoading = false;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.deepPurpleAccent,
         centerTitle: true,
         title: Text("Notification"),
       ),
-      body: shopBookedList.isEmpty
+      body: isLoading
           ? Center(
-              child: Text(
-                "EMPTY",
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
+              child: Center(
+                child: SpinKitFadingCircle(
+                  color: Colors.deepPurple[700],
                 ),
               ),
             )
           : Container(
               padding: EdgeInsets.all(8.0),
               child: ListView.builder(
-                itemCount: shopBookedList.length,
+                itemCount: data.documents.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Dismissible(
-                    key: Key(shopBookedList.getAt(index)[0]),
+                    key: Key(data.documents[index].data['name']),
                     onDismissed: (direction) {
-                      setState(() {
-                        shopBookedList.deleteAt(index);
-                      });
+                      CustomerInfoCrud().deleteBooking(
+                          userId.getAt(0), data.documents[index].data['name']);
                       Scaffold.of(context).showSnackBar(SnackBar(
                         content: Text("Deleted"),
                       ));
@@ -64,16 +71,16 @@ class _NotificationBooksState extends State<NotificationBooks> {
                     child: ListTile(
                       dense: true,
                       leading: Icon(
-                        Icons.shopping_basket,
-                        color: Colors.blue[900],
+                        Icons.receipt,
+                        color: Colors.deepPurpleAccent[900],
                       ),
                       title: Text(
-                        shopBookedList.getAt(index)[0],
+                        data.documents[index].data['name'],
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w800),
                       ),
                       subtitle: Text(
-                        shopBookedList.getAt(index)[2],
+                        data.documents[index].data['time'],
                         style: TextStyle(fontSize: 14),
                       ),
                       onTap: () {
@@ -82,8 +89,8 @@ class _NotificationBooksState extends State<NotificationBooks> {
                             builder: (BuildContext context) => CustomDialog(
                                 customerName: customerName,
                                 customerPhoto: customerPhoto,
-                                time: shopBookedList.getAt(index)[2],
-                                shopName: shopBookedList.getAt(index)[0],
+                                time: data.documents[index].data['time'],
+                                shopName: data.documents[index].data['name'],
                                 customerUid: userId.getAt(0)));
                       },
                     ),
@@ -125,7 +132,6 @@ class CustomDialog extends StatelessWidget {
                 BoxShadow(
                   color: Colors.black26,
                   blurRadius: 10.0,
-                  offset: Offset(0.0, 10.0),
                 ),
               ],
             ),
@@ -159,26 +165,35 @@ class CustomDialog extends StatelessWidget {
                 SizedBox(
                   height: 24.0,
                 ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Text(
-                    time,
-                    style: TextStyle(
-                        color: Colors.green,
-                        fontWeight: FontWeight.w900,
-                        fontSize: 16),
-                  ),
-                )
+                Text(
+                  time,
+                  style: TextStyle(
+                      color: Colors.green,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 18),
+                ),
+                QrImage(
+                  data: customerUid,
+                  version: QrVersions.auto,
+                  size: 200,
+                ),
               ],
             ),
           ),
-          Positioned(
-            left: 10,
-            right: 10,
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(customerPhoto),
-              radius: 50.0,
-            ),
+          Container(
+            height: 100,
+            child:Center(
+              child: customerPhoto == null
+                  ? CircleAvatar(
+                backgroundColor: Colors.deepPurple[700],
+                radius: 50,
+              )
+                  : CircleAvatar(
+                backgroundImage: NetworkImage(customerPhoto),
+                radius: 50,
+                backgroundColor: Colors.deepPurple[700],
+              ),
+            )
           ),
         ],
       ),

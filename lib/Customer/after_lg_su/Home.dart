@@ -4,6 +4,8 @@ import 'package:digi_queue/Customer/after_lg_su/Search.dart';
 import 'package:digi_queue/Customer/after_lg_su/drawer.dart';
 import 'package:digi_queue/Customer/after_lg_su/shopDetail.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 
 class Home extends StatefulWidget {
@@ -21,6 +23,7 @@ class _HomeState extends State<Home> {
   void initState() {
     userId = Hive.box<String>("userId");
     super.initState();
+
     CustomerInfoCrud().getCustomer(userId.getAt(0)).then((result) {
       setState(() {
         _customerName = result['customerName'].toString();
@@ -43,6 +46,7 @@ class _HomeState extends State<Home> {
     return !isLoading && !_isLoading1
         ? Scaffold(
             floatingActionButton: FloatingActionButton(
+              backgroundColor: Colors.deepPurpleAccent,
               child: Icon(Icons.search),
               onPressed: () {
                 Navigator.of(context)
@@ -54,6 +58,7 @@ class _HomeState extends State<Home> {
             drawer:
                 drawer(context, _customerName, _customerEmail, _customerPhoto),
             appBar: AppBar(
+              backgroundColor: Colors.deepPurpleAccent,
               centerTitle: true,
               title: Text("Customer"),
               actions: [
@@ -61,7 +66,9 @@ class _HomeState extends State<Home> {
                   onPressed: () {
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (build) {
-                      return NotificationBooks(_customerName, _customerPhoto);
+                      return NotificationBooks(
+                          customerName: _customerName,
+                          customerPhoto: _customerPhoto);
                     }));
                   },
                   icon: Icon(Icons.notifications),
@@ -72,7 +79,9 @@ class _HomeState extends State<Home> {
           )
         : Scaffold(
             body: Center(
-              child: CircularProgressIndicator(),
+              child: SpinKitFadingCircle(
+                color: Colors.deepPurple[700],
+              ),
             ),
           );
   }
@@ -94,7 +103,6 @@ class _HomeState extends State<Home> {
                       fontSize: 15,
                     ),
                   ),
-                  CircularProgressIndicator(),
                 ],
               ),
             );
@@ -104,46 +112,62 @@ class _HomeState extends State<Home> {
                 return FlatButton(
                   padding: EdgeInsets.fromLTRB(7.0, 5.0, 7.0, 5.0),
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (builder) {
-                      return ShopDetail(
-                          uid: snapShot.data.documents[index].data['userId']
-                              .toString(),
-                          name: snapShot.data.documents[index].data['shopName']
-                              .toString(),
-                          address: snapShot
-                              .data.documents[index].data['shopAddress']
-                              .toString(),
-                          description: snapShot
-                              .data.documents[index].data['shopDescription']
-                              .toString(),
-                          photo: snapShot
-                              .data.documents[index].data['shopPhoto']
-                              .toString(),
-                          phoneNo: snapShot
-                              .data.documents[index].data['shopPhoneNo']
-                              .toString());
-                    }));
+                    if (snapShot.data.documents[index].data['isOpen']
+                            .toString() ==
+                        'false') {
+                      Fluttertoast.showToast(
+                        msg: 'Shop is Closed',
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                      );
+                    } else {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (builder) {
+                        return ShopDetail(
+                            uid: snapShot.data.documents[index].data['userId']
+                                .toString(),
+                            name: snapShot
+                                .data.documents[index].data['shopName']
+                                .toString(),
+                            address: snapShot
+                                .data.documents[index].data['shopAddress']
+                                .toString(),
+                            description: snapShot
+                                .data.documents[index].data['shopDescription']
+                                .toString(),
+                            photo: snapShot
+                                .data.documents[index].data['shopPhoto']
+                                .toString(),
+                            phoneNo: snapShot
+                                .data.documents[index].data['shopPhoneNo']
+                                .toString());
+                      }));
+                    }
                   },
                   child: Container(
                     padding: EdgeInsets.all(8.0),
                     height: MediaQuery.of(context).size.height / 3,
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
-                      color: Colors.blueGrey[200],
+                      color: Colors.deepPurple[100],
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: Column(
                       children: [
                         Container(
-                          height: 2 * MediaQuery.of(context).size.height / 9,
-                          width: MediaQuery.of(context).size.width,
-                          child: Image.network(
-                            snapShot.data.documents[index].data['shopPhoto']
-                                .toString(),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                            height: 2 * MediaQuery.of(context).size.height / 9,
+                            width: MediaQuery.of(context).size.width,
+                            child: Image.network(
+                                snapShot.data.documents[index].data['shopPhoto']
+                                    .toString(),
+                                fit: BoxFit.cover, loadingBuilder:
+                                    (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return SpinKitThreeBounce(
+                                color: Colors.black38,
+                                size: 16,
+                              );
+                            })),
                         Text(
                           snapShot.data.documents[index].data['shopName']
                               .toString(),
@@ -158,6 +182,7 @@ class _HomeState extends State<Home> {
                             ? Text(
                                 "Open",
                                 style: TextStyle(
+                                  fontSize: 20,
                                   color: Colors.green,
                                   fontWeight: FontWeight.w900,
                                 ),
@@ -165,7 +190,8 @@ class _HomeState extends State<Home> {
                             : Text(
                                 "Closed",
                                 style: TextStyle(
-                                  color: Colors.red,
+                                  fontSize: 20,
+                                  color: Colors.red[400],
                                   fontWeight: FontWeight.w900,
                                 ),
                               ),

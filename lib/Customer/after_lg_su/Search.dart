@@ -1,6 +1,8 @@
 import 'package:digi_queue/Customer/after_lg_su/CustomerInfoCrud.dart';
 import 'package:digi_queue/Customer/after_lg_su/shopDetail.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Search extends StatefulWidget {
   @override
@@ -29,6 +31,7 @@ class _SearchState extends State<Search> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.deepPurpleAccent,
           title: Text("Search"),
           centerTitle: true,
         ),
@@ -74,33 +77,43 @@ class _SearchState extends State<Search> {
                                   padding:
                                       EdgeInsets.fromLTRB(7.0, 5.0, 7.0, 5.0),
                                   onPressed: () {
-                                    Navigator.push(context,
-                                        MaterialPageRoute(builder: (builder) {
-                                      return ShopDetail(
-                                          uid:
-                                              result.documents[searchedSellerList[index]].data['userId']
-                                                  .toString(),
-                                          name: result
-                                              .documents[
-                                                  searchedSellerList[index]]
-                                              .data['shopName']
-                                              .toString(),
-                                          address: result
-                                              .documents[
-                                                  searchedSellerList[index]]
-                                              .data['shopAddress']
-                                              .toString(),
-                                          description: result
-                                              .documents[
-                                                  searchedSellerList[index]]
-                                              .data['shopDescription']
-                                              .toString(),
-                                          photo: result
-                                              .documents[searchedSellerList[index]]
-                                              .data['shopPhoto']
-                                              .toString(),
-                                          phoneNo: result.documents[searchedSellerList[index]].data['shopPhoneNo'].toString());
-                                    }));
+                                    if (result.documents[index].data['isOpen']
+                                            .toString() ==
+                                        'false') {
+                                      Fluttertoast.showToast(
+                                        msg: 'Shop is Closed',
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.CENTER,
+                                      );
+                                    } else {
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (builder) {
+                                        return ShopDetail(
+                                            uid:
+                                                result.documents[searchedSellerList[index]].data['userId']
+                                                    .toString(),
+                                            name: result
+                                                .documents[
+                                                    searchedSellerList[index]]
+                                                .data['shopName']
+                                                .toString(),
+                                            address: result
+                                                .documents[
+                                                    searchedSellerList[index]]
+                                                .data['shopAddress']
+                                                .toString(),
+                                            description: result
+                                                .documents[
+                                                    searchedSellerList[index]]
+                                                .data['shopDescription']
+                                                .toString(),
+                                            photo: result
+                                                .documents[searchedSellerList[index]]
+                                                .data['shopPhoto']
+                                                .toString(),
+                                            phoneNo: result.documents[searchedSellerList[index]].data['shopPhoneNo'].toString());
+                                      }));
+                                    }
                                   },
                                   child: Container(
                                     padding: EdgeInsets.all(8.0),
@@ -128,6 +141,15 @@ class _SearchState extends State<Search> {
                                                 .data['shopPhoto']
                                                 .toString(),
                                             fit: BoxFit.cover,
+                                            loadingBuilder: (context, child,
+                                                loadingProgress) {
+                                              if (loadingProgress == null)
+                                                return child;
+                                              return SpinKitThreeBounce(
+                                                color: Colors.black38,
+                                                size: 16,
+                                              );
+                                            },
                                           ),
                                         ),
                                         Text(
@@ -173,8 +195,15 @@ class _SearchState extends State<Search> {
                               },
                             ),
                           )
-                        : Center(
-                            child: Text("Nothing to show !"),
+                        : Container(
+                            height: MediaQuery.of(context).size.height * 0.7,
+                            child: Center(
+                              child: Icon(
+                                Icons.search,
+                                size: 80,
+                                color: Colors.black12,
+                              ),
+                            ),
                           ),
                   ],
                 ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:digi_queue/Seller/after_lg_su/DrawerS.dart';
 import 'package:digi_queue/Seller/after_lg_su/shopInfoCrud.dart';
 import 'package:digi_queue/main.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class HomeS extends StatefulWidget {
   @override
@@ -10,7 +11,7 @@ class HomeS extends StatefulWidget {
 }
 
 class _HomeSState extends State<HomeS> {
-  String _shopName, _shopPhoto;
+  String _shopName, _shopPhoto, _shopEmail;
   bool _isOpen;
   bool isLoading;
   var timeLineData;
@@ -23,6 +24,12 @@ class _HomeSState extends State<HomeS> {
     super.initState();
     timeInterval = List<String>();
     timeInterval.addAll({
+      '7:00 am',
+      '7:20 am',
+      '7:40 am',
+      '8:00 am',
+      '8:20 am',
+      '8:40 am',
       '9:00 am',
       '9:20 am',
       '9:40 am',
@@ -62,7 +69,12 @@ class _HomeSState extends State<HomeS> {
       '9:00 pm',
       '9:20 pm',
       '9:40 pm',
+      '10:00 pm',
+      '10:20 pm',
+      '10:40 pm',
+      '11:00 pm'
     });
+
     //Getting Shop Information
 
     ShopInfoCrud().getShop(userId.getAt(0)).then((result) {
@@ -70,6 +82,7 @@ class _HomeSState extends State<HomeS> {
         _shopName = result['shopName'].toString();
         _shopPhoto = result['shopPhoto'].toString();
         _isOpen = result['isOpen'];
+        _shopEmail = result['shopEmail'];
         isLoading = false;
       });
       if (_isOpen) {
@@ -87,22 +100,35 @@ class _HomeSState extends State<HomeS> {
   Widget build(BuildContext context) {
     return !isLoading
         ? Scaffold(
-            drawer: drawerS(context, _shopName, "", _shopPhoto),
+            drawer: drawerS(context, _shopName, _shopEmail, _shopPhoto),
             appBar: AppBar(
+              backgroundColor: Colors.blueAccent[700],
               centerTitle: true,
               title: Text("SELLER"),
             ),
             body: _isOpen
                 ? Container(
+                    color: Colors.white,
                     child: _customerStream(),
                   )
-                : Center(
-                    child: Text("Shop is Close"),
+                : Container(
+                    color: Colors.white,
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    child: Center(
+                      child: Image.asset(
+                        'assets/images/close.jpg',
+                        height: MediaQuery.of(context).size.width / 2,
+                        width: MediaQuery.of(context).size.width / 2,
+                      ),
+                    ),
                   ),
           )
         : Scaffold(
             body: Center(
-              child: CircularProgressIndicator(),
+              child: SpinKitFadingCircle(
+                color: Colors.blue[700],
+              ),
             ),
           );
   }
@@ -153,7 +179,7 @@ class _HomeSState extends State<HomeS> {
                         },
                         tileColor: userInfo == 'Not booked yet'
                             ? _tileColor
-                            : Colors.greenAccent,
+                            : Colors.blue[100],
                         dense: true,
                         title: Text(
                           userInfo,
@@ -161,15 +187,20 @@ class _HomeSState extends State<HomeS> {
                         subtitle: Text(
                           timeFrame,
                         ),
-                        leading: Icon(
-                          Icons.account_circle,
+                        leading:userInfo == 'Not booked yet'
+                            ? Icon(
+                          Icons.highlight_off,
+                          color:Colors.red[600],
+                        ):Icon(
+                               Icons.check_circle_outline,
+                          color:Colors.green[600],
                         ),
                         trailing: Icon(
                           Icons.keyboard_arrow_right,
                         ),
                       ),
                     );
-                  } else {
+                  } else
                     return Container(
                       padding: EdgeInsets.fromLTRB(7.0, 5.0, 7.0, 5.0),
                       decoration: BoxDecoration(
@@ -180,8 +211,11 @@ class _HomeSState extends State<HomeS> {
                           tileColor: Colors.red[300],
                           title: Text(timeInterval[index])),
                     );
-                  }
-                }
+                } else
+                  return SizedBox(
+                    height: 0,
+                    width: MediaQuery.of(context).size.width,
+                  );
               });
         });
   }

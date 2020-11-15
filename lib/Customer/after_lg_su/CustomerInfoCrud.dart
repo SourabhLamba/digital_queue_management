@@ -45,7 +45,7 @@ class CustomerInfoCrud {
         .getDocuments();
   }
 
-  bookingUpdate(uid, bookTime) {
+  bookingUpdateOnSellerSide(uid, bookTime) {
     Firestore.instance
         .collection('seller')
         .document(uid)
@@ -53,5 +53,32 @@ class CustomerInfoCrud {
         .document(uid)
         .updateData(bookTime)
         .catchError((e) => print(e));
+  }
+
+  addbooking(data, uid, seller) {
+    Firestore.instance
+        .collection('customer')
+        .document(uid)
+        .collection('bookings')
+        .document(seller)
+        .setData(data)
+        .catchError((e) => print(e));
+  }
+
+  getBookings(uid) {
+    return Firestore.instance
+        .collection('customer')
+        .document(uid)
+        .collection('bookings')
+        .getDocuments();
+  }
+
+  deleteBooking(uid, seller) {
+    Firestore.instance
+        .collection('customer')
+        .document(uid)
+        .collection('bookings')
+        .document(seller)
+        .delete();
   }
 }
