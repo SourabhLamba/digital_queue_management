@@ -316,7 +316,7 @@ class _AccountState extends State<Account> {
             backgroundColor: Colors.white,
           ));
       if (croppedImage != null) {
-        //Up load to firebase .
+        //Up load to firebase
 
         Navigator.pop(context);
         setState(() {
