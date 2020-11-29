@@ -138,7 +138,6 @@ class _AccountState extends State<Account> {
                                 minWidth: double.infinity,
                                 height: 50,
                                 onPressed: () {
-
                                   var customerData = {
                                     'userId': userId.getAt(0),
                                     'customerName': _customerName,
@@ -151,8 +150,8 @@ class _AccountState extends State<Account> {
                                   Navigator.pop(context);
                                   Navigator.pushReplacement(context,
                                       MaterialPageRoute(builder: (builder) {
-                                        return Home();
-                                      }));
+                                    return Home();
+                                  }));
                                   showToast('Data Updated');
                                 },
                                 color: Colors.deepPurpleAccent,
@@ -219,14 +218,20 @@ class _AccountState extends State<Account> {
             children: [
               IconButton(
                 iconSize: 40,
-                icon: Icon(Icons.camera_alt,color: Colors.deepPurple[700],),
+                icon: Icon(
+                  Icons.camera_alt,
+                  color: Colors.deepPurple[700],
+                ),
                 onPressed: () {
                   upLoadImageFromCamera();
                 },
               ),
               IconButton(
                 iconSize: 40,
-                icon: Icon(Icons.image,color: Colors.deepPurple[700],),
+                icon: Icon(
+                  Icons.image,
+                  color: Colors.deepPurple[700],
+                ),
                 onPressed: () {
                   upLoadImageFromGallery();
                 },
@@ -311,7 +316,7 @@ class _AccountState extends State<Account> {
             backgroundColor: Colors.white,
           ));
       if (croppedImage != null) {
-        //Up load to firebase
+        //Up load to firebase .
 
         Navigator.pop(context);
         setState(() {
