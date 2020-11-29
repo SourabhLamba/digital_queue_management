@@ -8,29 +8,33 @@ import 'package:url_launcher/url_launcher.dart';
 
 Widget drawerS(context, String shopName, String shopEmail, String shopPhoto) {
   return Drawer(
-    elevation:1.5,
+    elevation: 1.5,
     child: Column(
       children: <Widget>[
-        DrawerHeader(
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(20),
           decoration: BoxDecoration(color: Colors.blueAccent[700]),
-          child: Expanded(
-            child: ListView(
-              padding: EdgeInsets.zero,
+          child: Center(
+            child: Column(
               children: [
                 Container(
-                  height: 80,
-                  child:Center(
-                    child: shopPhoto == null
-                        ? CircleAvatar(
-                      backgroundColor: Colors.deepPurple[700],
-                      radius: 40,
-                    )
-                        : CircleAvatar(
-                      backgroundImage: NetworkImage(shopPhoto),
-                      radius: 40,
-                      backgroundColor: Colors.deepPurple[700],
-                    ),
-                  ),
+                  margin: EdgeInsets.only(top: 30),
+                  height: 100,
+                  width: 100,
+                  child: shopPhoto == null
+                      ? CircleAvatar(
+                          backgroundColor: Colors.blue[900],
+                          radius: 40,
+                        )
+                      : CircleAvatar(
+                          backgroundImage: NetworkImage(shopPhoto),
+                          radius: 40,
+                          backgroundColor: Colors.blue[900],
+                        ),
+                ),
+                SizedBox(
+                  height: 10,
                 ),
                 Text(
                   shopName,
@@ -39,19 +43,26 @@ Widget drawerS(context, String shopName, String shopEmail, String shopPhoto) {
                       fontWeight: FontWeight.w700,
                       fontSize: 18),
                 ),
+                SizedBox(
+                  height: 10,
+                ),
                 Text(
                   shopEmail,
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w500,
-                      fontSize: 16),
+                      fontSize: 14),
                 ),
               ],
             ),
           ),
         ),
+        Divider(),
         ListTile(
-          leading: Icon(Icons.account_circle),
+          leading: Icon(
+            Icons.account_circle,
+            color: Colors.blue[900],
+          ),
           title: Text("Account"),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -61,7 +72,10 @@ Widget drawerS(context, String shopName, String shopEmail, String shopPhoto) {
         ),
         Divider(),
         ListTile(
-          leading: Icon(Icons.alarm_add),
+          leading: Icon(
+            Icons.alarm_add,
+            color: Colors.blue[900],
+          ),
           title: Text("Time Line"),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (builder) {
@@ -71,15 +85,23 @@ Widget drawerS(context, String shopName, String shopEmail, String shopPhoto) {
         ),
         Divider(),
         ListTile(
-          leading: Icon(Icons.adjust),
+          leading: Icon(
+            Icons.adjust,
+            color: Colors.blue[900],
+          ),
           title: Text("Contact Us"),
           onTap: () {
-            _sendEmail("mailto:rajsingharia.1234@gmail.com?subject=Qigi Queuet App&body=",context);
+            _sendEmail(
+                "mailto:rajsingharia.1234@gmail.com?subject=Qigi Queue App&body=",
+                context);
           },
         ),
         Divider(),
         ListTile(
-          leading: Icon(Icons.exit_to_app),
+          leading: Icon(
+            Icons.exit_to_app,
+            color: Colors.blue[900],
+          ),
           title: Text("Log Out"),
           onTap: () {
             FirebaseAuth.instance.signOut();
@@ -103,6 +125,7 @@ Widget drawerS(context, String shopName, String shopEmail, String shopPhoto) {
     ),
   );
 }
+
 Future<void> _sendEmail(String command, context) async {
   if (await canLaunch(command)) {
     await launch(

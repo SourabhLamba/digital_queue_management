@@ -122,7 +122,7 @@ class _CustomerDetailState extends State<CustomerDetail> {
                             height: 40,
                           ),
                           ListTile(
-                            leading: Icon(Icons.account_box_outlined),
+                            leading: Icon(Icons.account_box_outlined,color: Colors.blue[900],),
                             title:Text(_result.data['customerName'],style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w800,
@@ -133,7 +133,7 @@ class _CustomerDetailState extends State<CustomerDetail> {
                             height: 10,
                           ),
                           ListTile(
-                            leading: Icon(Icons.phone),
+                            leading: Icon(Icons.phone,color: Colors.blue[900],),
                               onTap: () {
                                 _makePhoneCall(
                                     "tel:${_result.data['customerPhoneNo'].toString()}",
@@ -150,7 +150,7 @@ class _CustomerDetailState extends State<CustomerDetail> {
                             height: 10,
                           ),
                           ListTile(
-                            leading: Icon(Icons.https),
+                            leading: Icon(Icons.https,color: Colors.blue[900],),
                             title:Text(_result.data['userId'],
                             style: TextStyle(
                               fontSize: 14,
@@ -171,7 +171,7 @@ class _CustomerDetailState extends State<CustomerDetail> {
         : Scaffold(
             body: Center(
               child: SpinKitFadingCircle(
-                color: Colors.blue[700],
+                color: Colors.blue[900],
               ),
             ),
           );

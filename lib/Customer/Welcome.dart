@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:digi_queue/animation/FadeAnimation.dart';
-
 import 'initial/LoginPage.dart';
-import 'initial/SignupPage.dart';
+import 'initial/SignUpPage.dart';
 
 class Welcome extends StatefulWidget {
   Welcome({Key key}) : super(key: key);
@@ -104,7 +103,7 @@ class _WelcomeState extends State<Welcome> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => SignupPage()));
+                                    builder: (context) => SignUpPage()));
                           },
                           color: Colors.deepPurpleAccent,
                           elevation: 0,

@@ -5,8 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:digi_queue/Customer/after_lg_su/Home.dart';
 import 'package:digi_queue/animation/FadeAnimation.dart';
-
-import 'SignupPage.dart';
+import 'SignUpPage.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -219,7 +218,7 @@ class _LoginPageState extends State<LoginPage> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) {
-                                          return SignupPage();
+                                          return SignUpPage();
                                         },
                                       ),
                                     );

@@ -6,15 +6,14 @@ import 'package:hive/hive.dart';
 import 'package:digi_queue/Customer/after_lg_su/Home.dart';
 import 'package:digi_queue/animation/FadeAnimation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 import 'LoginPage.dart';
 
-class SignupPage extends StatefulWidget {
+class SignUpPage extends StatefulWidget {
   @override
-  _SignupPageState createState() => _SignupPageState();
+  _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class _SignUpPageState extends State<SignUpPage> {
   String _email = '', _password1 = "", _password2 = "";
 
   Box<String> whoAreYou;

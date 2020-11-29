@@ -46,7 +46,7 @@ class _HomeState extends State<Home> {
     return !isLoading && !_isLoading1
         ? Scaffold(
             floatingActionButton: FloatingActionButton(
-              backgroundColor: Colors.deepPurpleAccent,
+                backgroundColor: Colors.deepPurpleAccent[400],
               child: Icon(Icons.search),
               onPressed: () {
                 Navigator.of(context)
@@ -58,7 +58,7 @@ class _HomeState extends State<Home> {
             drawer:
                 drawer(context, _customerName, _customerEmail, _customerPhoto),
             appBar: AppBar(
-              backgroundColor: Colors.deepPurpleAccent,
+              backgroundColor: Colors.deepPurpleAccent[400],
               centerTitle: true,
               title: Text("Customer"),
               actions: [

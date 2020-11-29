@@ -47,7 +47,7 @@ class _AccountSState extends State<AccountS> {
             ),
             body: _result != null
                 ? Container(
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                     child: SingleChildScrollView(
                       child: Form(
                           child: Column(
@@ -56,7 +56,7 @@ class _AccountSState extends State<AccountS> {
                             height: 10,
                           ),
                           Container(
-                            color: Colors.grey,
+                            color: Colors.transparent,
                             height: MediaQuery.of(context).size.width * 0.6,
                             width: MediaQuery.of(context).size.width * 0.8,
                             child: FlatButton(
@@ -135,33 +135,61 @@ class _AccountSState extends State<AccountS> {
                           SizedBox(
                             height: 20,
                           ),
-                          RaisedButton(
-                              child: Text("Save"),
-                              onPressed: () {
-                                var shopData = {
-                                  'userId': userId.getAt(0),
-                                  'shopName': _shopName,
-                                  'shopAddress': _shopAddress,
-                                  'shopDescription': _shopDescription,
-                                  'shopPhoneNo': _shopPhoneno,
-                                  'shopPhoto': _shopPhoto
-                                };
-                                ShopInfoCrud()
-                                    .upDateShopData(userId.getAt(0), shopData);
-                                Navigator.pop(context);
-                                Navigator.pushReplacement(context,
-                                    MaterialPageRoute(builder: (builder) {
-                                  return HomeS();
-                                }));
-                                showToast('Data Updated');
-                              })
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 40),
+                            child: Container(
+                              padding: EdgeInsets.only(top: 3, left: 3),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  border: Border(
+                                    bottom: BorderSide(color: Colors.black),
+                                    top: BorderSide(color: Colors.black),
+                                    left: BorderSide(color: Colors.black),
+                                    right: BorderSide(color: Colors.black),
+                                  )),
+                              child: MaterialButton(
+                                minWidth: double.infinity,
+                                height: 50,
+                                onPressed: () {
+                                  var shopData = {
+                                    'userId': userId.getAt(0),
+                                    'shopName': _shopName,
+                                    'shopAddress': _shopAddress,
+                                    'shopDescription': _shopDescription,
+                                    'shopPhoneNo': _shopPhoneno,
+                                    'shopPhoto': _shopPhoto
+                                  };
+                                  ShopInfoCrud()
+                                      .upDateShopData(userId.getAt(0), shopData);
+                                  Navigator.pop(context);
+                                  Navigator.pushReplacement(context,
+                                      MaterialPageRoute(builder: (builder) {
+                                        return HomeS();
+                                      }));
+                                  showToast('Data Updated');
+                                },
+                                color: Colors.blueAccent[700],
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50)),
+                                child: Text(
+                                  "Save",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18),
+                                ),
+                              ),
+                            ),
+                          )
+
                         ],
                       )),
                     ),
                   )
                 : Center(
                     child: SpinKitFadingCircle(
-                      color: Colors.blue[700],
+                      color: Colors.blue[900],
                     ),
                   ),
           )
@@ -172,7 +200,7 @@ class _AccountSState extends State<AccountS> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SpinKitPouringHourglass(
-                    color: Colors.blue[700],
+                    color: Colors.blue[900],
                   ),
                   SizedBox(
                     height: 20,

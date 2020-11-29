@@ -160,7 +160,7 @@ class _TimeLineSState extends State<TimeLineS> {
         : Scaffold(
             body: Center(
               child: SpinKitFadingCircle(
-                color: Colors.blue[700],
+                color: Colors.blue[900],
               ),
             ),
           );

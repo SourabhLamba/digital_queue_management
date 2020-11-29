@@ -13,7 +13,6 @@ class NotificationBooks extends StatefulWidget {
       _NotificationBooksState(customerName, customerPhoto);
 }
 
-//Box<List<String>> shopBookedList;
 Box<String> userId;
 bool isLoading = true;
 var data;
@@ -26,7 +25,6 @@ class _NotificationBooksState extends State<NotificationBooks> {
   }
   @override
   void initState() {
-    //shopBookedList = Hive.box<List<String>>('shopBookedDetail');
     userId = Hive.box<String>("userId");
     super.initState();
 
@@ -42,7 +40,7 @@ class _NotificationBooksState extends State<NotificationBooks> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepPurpleAccent,
+        backgroundColor: Colors.deepPurpleAccent[400],
         centerTitle: true,
         title: Text("Notification"),
       ),
@@ -72,7 +70,7 @@ class _NotificationBooksState extends State<NotificationBooks> {
                       dense: true,
                       leading: Icon(
                         Icons.receipt,
-                        color: Colors.deepPurpleAccent[900],
+                        color: Colors.deepPurpleAccent[700],
                       ),
                       title: Text(
                         data.documents[index].data['name'],
@@ -120,6 +118,7 @@ class CustomDialog extends StatelessWidget {
       elevation: 0.0,
       backgroundColor: Colors.transparent,
       child: Stack(
+        alignment: Alignment.center,
         children: [
           Container(
             padding: EdgeInsets.all(10),
@@ -181,20 +180,20 @@ class CustomDialog extends StatelessWidget {
             ),
           ),
           Container(
-            height: 100,
-            child:Center(
-              child: customerPhoto == null
-                  ? CircleAvatar(
-                backgroundColor: Colors.deepPurple[700],
-                radius: 50,
-              )
-                  : CircleAvatar(
-                backgroundImage: NetworkImage(customerPhoto),
-                radius: 50,
-                backgroundColor: Colors.deepPurple[700],
-              ),
-            )
-          ),
+              height: 100,
+              width: MediaQuery.of(context).size.width,
+              child: Center(
+                child: customerPhoto == null
+                    ? CircleAvatar(
+                        backgroundColor: Colors.deepPurple[700],
+                        radius: 50,
+                      )
+                    : CircleAvatar(
+                        backgroundImage: NetworkImage(customerPhoto),
+                        radius: 50,
+                        backgroundColor: Colors.deepPurple[700],
+                      ),
+              )),
         ],
       ),
     );

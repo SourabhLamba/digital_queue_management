@@ -127,7 +127,7 @@ class _HomeSState extends State<HomeS> {
         : Scaffold(
             body: Center(
               child: SpinKitFadingCircle(
-                color: Colors.blue[700],
+                color: Colors.blue[900],
               ),
             ),
           );

@@ -132,7 +132,7 @@ class _ShopDetailState extends State<ShopDetail> {
     return isLoading2 == false
         ? Scaffold(
             appBar: AppBar(
-              backgroundColor: Colors.deepPurpleAccent,
+              backgroundColor: Colors.deepPurpleAccent[400],
               title: Text("Shop Details"),
               centerTitle: true,
             ),
@@ -147,8 +147,7 @@ class _ShopDetailState extends State<ShopDetail> {
                         children: [
                           Container(
                             padding: EdgeInsets.all(5.0),
-                            height:
-                                2 * MediaQuery.of(context).size.height / 9,
+                            height: 2 * MediaQuery.of(context).size.height / 9,
                             width: MediaQuery.of(context).size.width,
                             child: Image.network(
                               photo,
@@ -160,17 +159,26 @@ class _ShopDetailState extends State<ShopDetail> {
                           ),
                           ListTile(
                             dense: true,
-                            leading: Icon(Icons.home),
+                            leading: Icon(
+                              Icons.home,
+                              color: Colors.deepPurple[700],
+                            ),
                             title: Text(name),
                           ),
                           ListTile(
                             dense: true,
-                            leading: Icon(Icons.map),
+                            leading: Icon(
+                              Icons.map,
+                              color: Colors.deepPurple[700],
+                            ),
                             title: Text(address),
                           ),
                           ListTile(
                             dense: true,
-                            leading: Icon(Icons.details),
+                            leading: Icon(
+                              Icons.details,
+                              color: Colors.deepPurple[700],
+                            ),
                             title: Text(description),
                           ),
                           ListTile(
@@ -178,7 +186,10 @@ class _ShopDetailState extends State<ShopDetail> {
                               _makePhoneCall("tel:$phoneNo", context);
                             },
                             dense: true,
-                            leading: Icon(Icons.call),
+                            leading: Icon(
+                              Icons.call,
+                              color: Colors.deepPurple[700],
+                            ),
                             title: Text(phoneNo),
                           ),
                         ],
@@ -192,7 +203,7 @@ class _ShopDetailState extends State<ShopDetail> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  "Already Booked at",
+                                  "Booked at",
                                   style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     fontSize: 18,

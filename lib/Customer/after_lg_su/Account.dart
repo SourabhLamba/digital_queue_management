@@ -41,12 +41,12 @@ class _AccountState extends State<Account> {
     return isUploading == false
         ? Scaffold(
             appBar: AppBar(
-              backgroundColor: Colors.deepPurpleAccent,
+              backgroundColor: Colors.deepPurpleAccent[400],
               title: Text("Account"),
             ),
             body: _result != null
                 ? Container(
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                     child: SingleChildScrollView(
                       child: Form(
                           child: Column(
@@ -55,7 +55,7 @@ class _AccountState extends State<Account> {
                             height: 10,
                           ),
                           Container(
-                            color: Colors.grey,
+                            color: Colors.transparent,
                             height: MediaQuery.of(context).size.width * 0.8,
                             width: MediaQuery.of(context).size.width * 0.8,
                             child: FlatButton(
@@ -122,25 +122,53 @@ class _AccountState extends State<Account> {
                           SizedBox(
                             height: 20,
                           ),
-                          RaisedButton(
-                              child: Text("Save"),
-                              onPressed: () {
-                                var customerData = {
-                                  'userId': userId.getAt(0),
-                                  'customerName': _customerName,
-                                  'cutomerAddress': _customerAddress,
-                                  'customerPhoneNo': _customerPhoneNo,
-                                  'customerPhoto': _customerPhoto
-                                };
-                                CustomerInfoCrud().upDateCustomerData(
-                                    userId.getAt(0), customerData);
-                                Navigator.pop(context);
-                                Navigator.pushReplacement(context,
-                                    MaterialPageRoute(builder: (builder) {
-                                  return Home();
-                                }));
-                                showToast('Data Updated');
-                              })
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 40),
+                            child: Container(
+                              padding: EdgeInsets.only(top: 3, left: 3),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  border: Border(
+                                    bottom: BorderSide(color: Colors.black),
+                                    top: BorderSide(color: Colors.black),
+                                    left: BorderSide(color: Colors.black),
+                                    right: BorderSide(color: Colors.black),
+                                  )),
+                              child: MaterialButton(
+                                minWidth: double.infinity,
+                                height: 50,
+                                onPressed: () {
+
+                                  var customerData = {
+                                    'userId': userId.getAt(0),
+                                    'customerName': _customerName,
+                                    'cutomerAddress': _customerAddress,
+                                    'customerPhoneNo': _customerPhoneNo,
+                                    'customerPhoto': _customerPhoto
+                                  };
+                                  CustomerInfoCrud().upDateCustomerData(
+                                      userId.getAt(0), customerData);
+                                  Navigator.pop(context);
+                                  Navigator.pushReplacement(context,
+                                      MaterialPageRoute(builder: (builder) {
+                                        return Home();
+                                      }));
+                                  showToast('Data Updated');
+                                },
+                                color: Colors.deepPurpleAccent,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50)),
+                                child: Text(
+                                  "Save",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18),
+                                ),
+                              ),
+                            ),
+                          )
                         ],
                       )),
                     ),
@@ -191,14 +219,14 @@ class _AccountState extends State<Account> {
             children: [
               IconButton(
                 iconSize: 40,
-                icon: Icon(Icons.camera_alt),
+                icon: Icon(Icons.camera_alt,color: Colors.deepPurple[700],),
                 onPressed: () {
                   upLoadImageFromCamera();
                 },
               ),
               IconButton(
                 iconSize: 40,
-                icon: Icon(Icons.image),
+                icon: Icon(Icons.image,color: Colors.deepPurple[700],),
                 onPressed: () {
                   upLoadImageFromGallery();
                 },

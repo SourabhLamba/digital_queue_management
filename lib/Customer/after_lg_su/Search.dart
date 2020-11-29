@@ -31,7 +31,7 @@ class _SearchState extends State<Search> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.deepPurpleAccent,
+          backgroundColor: Colors.deepPurpleAccent[400],
           title: Text("Search"),
           centerTitle: true,
         ),
@@ -52,7 +52,10 @@ class _SearchState extends State<Search> {
                         controller: searchController,
                         decoration: InputDecoration(
                           suffixIcon: IconButton(
-                              icon: Icon(Icons.search),
+                              icon: Icon(
+                                Icons.search,
+                                color: Colors.deepPurple[700],
+                              ),
                               onPressed: () {
                                 searchedSellerList.clear();
                                 showResult = false;
@@ -66,10 +69,7 @@ class _SearchState extends State<Search> {
                       ),
                     ),
                     showResult
-                        ? Container(
-                            height:
-                                MediaQuery.of(context).size.height * (14 / 15),
-                            width: MediaQuery.of(context).size.width,
+                        ? Expanded(
                             child: ListView.builder(
                               itemCount: searchedSellerList.length,
                               itemBuilder: (builder, index) {
@@ -201,7 +201,7 @@ class _SearchState extends State<Search> {
                               child: Icon(
                                 Icons.search,
                                 size: 80,
-                                color: Colors.black12,
+                                color: Colors.deepPurple[100],
                               ),
                             ),
                           ),

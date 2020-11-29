@@ -8,29 +8,33 @@ import '../../main.dart';
 
 Widget drawer(context, customerName, customerEmail, customerPhoto) {
   return Drawer(
-    elevation:1.5,
+    elevation: 1.5,
     child: Column(
       children: <Widget>[
-        DrawerHeader(
-          decoration: BoxDecoration(color: Colors.deepPurpleAccent),
-          child: Expanded(
-            child: ListView(
-              padding: EdgeInsets.zero,
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(20),
+          decoration: BoxDecoration(color: Colors.deepPurpleAccent[400]),
+          child: Center(
+            child: Column(
               children: [
                 Container(
-                  height: 80,
-                  child:Center(
-                    child: customerPhoto == null
-                        ? CircleAvatar(
-                      backgroundColor: Colors.deepPurple[700],
-                      radius: 40,
-                    )
-                        : CircleAvatar(
-                      backgroundImage: NetworkImage(customerPhoto),
-                      radius: 40,
-                      backgroundColor: Colors.deepPurple[700],
-                    ),
-                  ),
+                  margin: EdgeInsets.only(top: 30),
+                  height: 100,
+                  width: 100,
+                  child: customerPhoto == null
+                      ? CircleAvatar(
+                          backgroundColor: Colors.deepPurple[700],
+                          radius: 40,
+                        )
+                      : CircleAvatar(
+                          backgroundImage: NetworkImage(customerPhoto),
+                          radius: 40,
+                          backgroundColor: Colors.deepPurple[700],
+                        ),
+                ),
+                SizedBox(
+                  height: 10,
                 ),
                 Text(
                   customerName,
@@ -53,8 +57,12 @@ Widget drawer(context, customerName, customerEmail, customerPhoto) {
             ),
           ),
         ),
+        Divider(),
         ListTile(
-          leading: Icon(Icons.account_circle),
+          leading: Icon(
+            Icons.account_circle,
+            color: Colors.deepPurple[700],
+          ),
           title: Text("Account"),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -64,15 +72,23 @@ Widget drawer(context, customerName, customerEmail, customerPhoto) {
         ),
         Divider(),
         ListTile(
-          leading: Icon(Icons.adjust),
+          leading: Icon(
+            Icons.adjust,
+            color: Colors.deepPurple[700],
+          ),
           title: Text("Contact Us"),
           onTap: () {
-            _sendEmail("mailto:rajsingharia.1234@gmail.com?subject=Qigi Queuet App&body=",context);
+            _sendEmail(
+                "mailto:rajsingharia.1234@gmail.com?subject=Digi Queue App&body=",
+                context);
           },
         ),
         Divider(),
         ListTile(
-          leading: Icon(Icons.exit_to_app),
+          leading: Icon(
+            Icons.exit_to_app,
+            color: Colors.deepPurple[700],
+          ),
           title: Text("Log Out"),
           onTap: () {
             FirebaseAuth.instance.signOut();
