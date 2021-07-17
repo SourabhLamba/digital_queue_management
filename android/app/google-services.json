@@ -1,42 +1,33 @@
 {
   "project_info": {
-    "project_number": "1053950539048",
-    "firebase_url": "https://digi-queue.firebaseio.com",
-    "project_id": "digi-queue",
-    "storage_bucket": "digi-queue.appspot.com"
+    "project_number": "335366865398",
+    "project_id": "digi-queue-64cd1",
+    "storage_bucket": "digi-queue-64cd1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1053950539048:android:1c45bc12166fe369524c1d",
+        "mobilesdk_app_id": "1:335366865398:android:2770f84ae5248fcc7dc7d7",
         "android_client_info": {
           "package_name": "com.android.digi_queue"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1053950539048-qheia9hakiubuppp7hpdnavpulut76iq.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.android.digi_queue",
-            "certificate_hash": "1698e3d5147b528c3aec0eb84cb9b1f215246a8c"
-          }
-        },
-        {
-          "client_id": "1053950539048-8i6dr89kiegme6arajfhpn3c4feic7i8.apps.googleusercontent.com",
+          "client_id": "335366865398-rvock9g9mmhsfu4l2854fb6vj96qht58.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAq6tP_CZVaQTLKjqfWpnZEkt_Y2hk5ZoI"
+          "current_key": "AIzaSyCILfVgpl0Si24fmhkmAlwaejoLtWKEWgA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1053950539048-8i6dr89kiegme6arajfhpn3c4feic7i8.apps.googleusercontent.com",
+              "client_id": "335366865398-rvock9g9mmhsfu4l2854fb6vj96qht58.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

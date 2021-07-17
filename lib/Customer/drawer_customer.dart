@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:digi_queue/Seller/after_lg_su/AccountS.dart';
-import 'package:digi_queue/Seller/after_lg_su/TimeLineS.dart';
-import 'package:digi_queue/main.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-Widget drawerS(context, String shopName, String shopEmail, String shopPhoto) {
+import 'account_customer.dart';
+import '../select_user_screen.dart';
+import '../widgets/show_toast.dart';
+
+Widget drawer(context, customerName, customerEmail, customerPhoto) {
   return Drawer(
     elevation: 1.5,
     child: Column(
@@ -14,30 +14,34 @@ Widget drawerS(context, String shopName, String shopEmail, String shopPhoto) {
         Container(
           width: double.infinity,
           padding: EdgeInsets.all(20),
-          decoration: BoxDecoration(color: Colors.blueAccent[700]),
+          decoration: BoxDecoration(color: Colors.deepPurpleAccent[400]),
           child: Center(
             child: Column(
               children: [
                 Container(
-                  margin: EdgeInsets.only(top: 30),
+                  margin: EdgeInsets.only(top: 20),
                   height: 100,
                   width: 100,
-                  child: shopPhoto == null
+                  child: customerPhoto == 'null'
                       ? CircleAvatar(
-                          backgroundColor: Colors.blue[900],
+                          child: Icon(
+                            Icons.person,
+                            size: 60,
+                            color: Colors.grey[300],
+                          ),
+                          backgroundColor: Colors.blueGrey[300],
                           radius: 40,
                         )
                       : CircleAvatar(
-                          backgroundImage: NetworkImage(shopPhoto),
+                          backgroundImage: NetworkImage(customerPhoto),
                           radius: 40,
-                          backgroundColor: Colors.blue[900],
                         ),
                 ),
                 SizedBox(
                   height: 10,
                 ),
                 Text(
-                  shopName,
+                  customerName,
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
@@ -47,7 +51,7 @@ Widget drawerS(context, String shopName, String shopEmail, String shopPhoto) {
                   height: 10,
                 ),
                 Text(
-                  shopEmail,
+                  customerEmail,
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w500,
@@ -61,25 +65,12 @@ Widget drawerS(context, String shopName, String shopEmail, String shopPhoto) {
         ListTile(
           leading: Icon(
             Icons.account_circle,
-            color: Colors.blue[900],
+            color: Colors.deepPurple[700],
           ),
           title: Text("Account"),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return AccountS();
-            }));
-          },
-        ),
-        Divider(),
-        ListTile(
-          leading: Icon(
-            Icons.alarm_add,
-            color: Colors.blue[900],
-          ),
-          title: Text("Time Line"),
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (builder) {
-              return TimeLineS();
+              return AccountCustomer();
             }));
           },
         ),
@@ -87,12 +78,12 @@ Widget drawerS(context, String shopName, String shopEmail, String shopPhoto) {
         ListTile(
           leading: Icon(
             Icons.adjust,
-            color: Colors.blue[900],
+            color: Colors.deepPurple[700],
           ),
           title: Text("Contact Us"),
           onTap: () {
             _sendEmail(
-                "mailto:rajsingharia.1234@gmail.com?subject=Qigi Queue App&body=",
+                "mailto:s.gupta1242@gmail.com?subject=Digi Queue App&body=",
                 context);
           },
         ),
@@ -100,14 +91,14 @@ Widget drawerS(context, String shopName, String shopEmail, String shopPhoto) {
         ListTile(
           leading: Icon(
             Icons.exit_to_app,
-            color: Colors.blue[900],
+            color: Colors.deepPurple[700],
           ),
           title: Text("Log Out"),
           onTap: () {
             FirebaseAuth.instance.signOut();
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context) {
-              return HPage();
+              return SelectUserScreen();
             }));
           },
         ),
@@ -132,10 +123,6 @@ Future<void> _sendEmail(String command, context) async {
       command,
     );
   } else {
-    Fluttertoast.showToast(
-      msg: "Unable To Send Email",
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.CENTER,
-    );
+    showToast("Unable to send E-Mail.");
   }
 }

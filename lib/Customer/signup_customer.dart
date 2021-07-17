@@ -1,19 +1,22 @@
-import 'package:digi_queue/Customer/after_lg_su/CustomerInfoCrud.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:hive/hive.dart';
-import 'package:digi_queue/Customer/after_lg_su/Home.dart';
-import 'package:digi_queue/animation/FadeAnimation.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'LoginPage.dart';
 
-class SignUpPage extends StatefulWidget {
+import 'package:hive/hive.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+import 'package:digi_queue/Customer/home_screen_customer.dart';
+import 'package:digi_queue/animation/FadeAnimation.dart';
+import 'package:digi_queue/Customer/CustomerInfoCrud.dart';
+import 'login_customer.dart';
+import '../widgets/spinKit_loading.dart';
+
+class SignUpCustomer extends StatefulWidget {
+  static const routeName = 'CustomerSignUp';
   @override
-  _SignUpPageState createState() => _SignUpPageState();
+  _SignUpCustomerState createState() => _SignUpCustomerState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _SignUpCustomerState extends State<SignUpCustomer> {
   String _email = '', _password1 = "", _password2 = "";
 
   Box<String> whoAreYou;
@@ -30,22 +33,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return isLoading == true
-        ? AlertDialog(
-            title: Center(
-              child: Text(
-                "Loading",
-              ),
-            ),
-            content: Container(
-              height: MediaQuery.of(context).size.height / 6,
-              width: MediaQuery.of(context).size.width / 6,
-              child: Center(
-                child: SpinKitWave(
-                  color: Colors.deepPurple[700],
-                ),
-              ),
-            ),
-          )
+        ? SpinKitWaveLoading()
         : Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
@@ -186,7 +174,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     Navigator.pop(context);
                                     Navigator.pushReplacement(context,
                                         MaterialPageRoute(builder: (context) {
-                                      return Home();
+                                      return HomeScreenCustomer();
                                     }));
                                   } else {
                                     Fluttertoast.showToast(
@@ -226,20 +214,20 @@ class _SignUpPageState extends State<SignUpPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text("Already have an account?"),
-                            FlatButton(
+                            TextButton(
                               onPressed: () {
                                 Navigator.pop(context);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => LoginPage()));
+                                        builder: (context) => LoginCustomer()));
                               },
                               child: Text(
                                 "Login",
                                 style: TextStyle(
-                                    color: Colors.deepPurpleAccent,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 18,
+                                  color: Colors.deepPurpleAccent,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 18,
                                 ),
                               ),
                             ),
@@ -250,34 +238,5 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
             ),
           );
-  }
-
-  Widget makeInput({label, obscureText = false}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          label,
-          style: TextStyle(
-              fontSize: 15, fontWeight: FontWeight.w400, color: Colors.black87),
-        ),
-        SizedBox(
-          height: 5,
-        ),
-        TextField(
-          obscureText: obscureText,
-          decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-            enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey[400])),
-            border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey[400])),
-          ),
-        ),
-        SizedBox(
-          height: 30,
-        ),
-      ],
-    );
   }
 }

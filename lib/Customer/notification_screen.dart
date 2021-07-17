@@ -1,25 +1,26 @@
-import 'package:digi_queue/Customer/after_lg_su/CustomerInfoCrud.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hive/hive.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-class NotificationBooks extends StatefulWidget {
+import 'package:digi_queue/Customer/CustomerInfoCrud.dart';
+
+class NotificationScreen extends StatefulWidget {
   final customerName, customerPhoto;
 
-  NotificationBooks({this.customerName, this.customerPhoto});
+  NotificationScreen({this.customerName, this.customerPhoto});
   @override
-  _NotificationBooksState createState() =>
-      _NotificationBooksState(customerName, customerPhoto);
+  _NotificationScreenState createState() =>
+      _NotificationScreenState(customerName, customerPhoto);
 }
 
 Box<String> userId;
 bool isLoading = true;
 var data;
 
-class _NotificationBooksState extends State<NotificationBooks> {
+class _NotificationScreenState extends State<NotificationScreen> {
   String customerName, customerPhoto;
-  _NotificationBooksState(String _customerName, String _customerPhoto) {
+  _NotificationScreenState(String _customerName, String _customerPhoto) {
     this.customerName = _customerName;
     this.customerPhoto = _customerPhoto;
   }
@@ -62,7 +63,7 @@ class _NotificationBooksState extends State<NotificationBooks> {
                     onDismissed: (direction) {
                       CustomerInfoCrud().deleteBooking(
                           userId.getAt(0), data.documents[index].data['name']);
-                      Scaffold.of(context).showSnackBar(SnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text("Deleted"),
                       ));
                     },

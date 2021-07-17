@@ -55,6 +55,16 @@ class CustomerInfoCrud {
         .catchError((e) => print(e));
   }
 
+  cancelUpdateOnSellerSide(uid, bookTime) {
+    Firestore.instance
+        .collection('seller')
+        .document(uid)
+        .collection('timeLine')
+        .document(uid)
+        .updateData(bookTime)
+        .catchError((e) => print(e));
+  }
+
   addbooking(data, uid, seller) {
     Firestore.instance
         .collection('customer')
